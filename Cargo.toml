@@ -11,10 +11,6 @@ homepage = "https://github.com/isfegu/musket"
 keywords = ["ssmm"]
 categories = ["command-line-utilities"]
 
-[lib]
-name = "targets"
-path = "src/targets.rs"
-
 [[bin]]
 name = "musket"
 path = "src/bin.rs"
