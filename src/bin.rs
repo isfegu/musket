@@ -18,13 +18,13 @@ enum Commands {
         #[arg(short, long)]
         url: String,
 
-        /// URL destination
+        /// Place to send (publish, save, etc.) the URL
         #[arg(short, long)]
-        target: Vec<Destinations>,
+        destination: Vec<Destinations>,
 
         /// Tags separated by comas
         #[arg(short, long)]
-        labels: Option<String>,
+        tags: Option<String>,
     },
     /// TO DO: write something about FireAtWill Command
     ///
@@ -36,7 +36,7 @@ enum Commands {
 
         /// Tags separated by comas
         #[arg(short, long)]
-        labels: Option<String>,
+        tags: Option<String>,
     },
 }
 

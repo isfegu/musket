@@ -16,10 +16,10 @@ Last stable Rust toolchain. Use [Rustup](https://rustup.rs/) to install it.
 
 ### Install
 
-### Basic
+### Execute
 
 ```bash
-$ musket fire --url <url> --target <target> --labels <labels>
+$ musket fire --url <URL> --destination <DESTINATION> --tags <tags>
 ```
 
 Run `musket -h` to get the details of each subcommand and arguments.
