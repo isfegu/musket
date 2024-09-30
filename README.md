@@ -1,6 +1,10 @@
 # Musket
 
+@todo
+
 ## Contributing
+
+@todo
 
 ### Requirements
 
@@ -14,7 +18,11 @@ Last stable Rust toolchain. Use [Rustup](https://rustup.rs/) to install it.
 
 ## Usage
 
+@todo
+
 ### Install
+
+@todo
 
 ### Execute
 

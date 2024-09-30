@@ -1,4 +1,5 @@
 use clap::{Parser, Subcommand};
+use destinations::Destination;
 
 /// TO DO: Add description
 #[derive(Parser, Debug)]
@@ -20,7 +21,7 @@ enum Commands {
 
         /// Place to send (publish, save, etc.) the URL
         #[arg(short, long)]
-        destination: Vec<Destinations>,
+        destination: Vec<DestinationsLabels>,
 
         /// Tags separated by comas
         #[arg(short, long)]
@@ -41,7 +42,7 @@ enum Commands {
 }
 
 #[derive(Debug, Clone, clap::ValueEnum)]
-enum Destinations {
+enum DestinationsLabels {
     All,
     X,
     Linkedin,
@@ -50,5 +51,10 @@ enum Destinations {
 fn main() {
     let args = Args::parse();
     println!("{:?}", &args.cmd);
-    println!("Hello, world!");
+
+    let linked_in = destinations::LinkedIn;
+    linked_in.shot();
+
+    let x = destinations::X;
+    x.shot();
 }
