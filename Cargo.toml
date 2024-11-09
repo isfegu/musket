@@ -1,0 +1,19 @@
+[package]
+name = "musket"
+version = "0.1.0"
+edition = "2021"
+repository = "https://github.com/isfegu/musket"
+description = "TO DO"
+license = "MIT"
+authors = ["isfegu"]
+readme = "README.md"
+homepage = "https://github.com/isfegu/musket"
+keywords = ["ssmm", "cli", "bookmarks"]
+categories = ["command-line-utilities"]
+
+[[bin]]
+name = "musket"
+path = "src/bin.rs"
+
+[dependencies]
+clap = { version = "4.5.20", features = ["derive"] }
