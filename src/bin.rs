@@ -1,4 +1,6 @@
+use chrono::prelude::*;
 use clap::{Parser, Subcommand};
+use libsql::Builder;
 
 /// TO DO: Add description
 #[derive(Parser, Debug)]
@@ -43,13 +45,12 @@ enum Commands {
 #[derive(Debug, Clone, clap::ValueEnum)]
 enum Destinations {
     All,
-    Foo,
-    Bar,
+    Turso,
 }
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let args = Args::parse();
-    println!("{:?}", args.cmd);
 
     match args.cmd {
         Commands::Fire {
@@ -61,13 +62,19 @@ fn main() {
 
             match destination {
                 Some(destinations) => {
-                    destinations
-                        .iter()
-                        .for_each(|target| fire_a_bullet(&url, target, &vector_of_tags));
+                    for target in destinations {
+                        println!(
+                            "Sending \"{}\" to {:?} using this tags \"{}\"",
+                            url,
+                            &target,
+                            &vector_of_tags.join(", ")
+                        );
+                        fire_a_bullet(&url, &target, &vector_of_tags).await.unwrap();
+                    }
                 }
                 None => {
                     println!(
-                        "The url '{}' cannot be sent to a non-existing destination. Set at least one destination.",
+                        "The url \"{}\" cannot be sent to a non-existing destination. Set at least one destination.",
                         url
                     );
                 }
@@ -79,31 +86,36 @@ fn main() {
     }
 }
 
-fn fire_a_bullet(url: &str, target: &Destinations, tags: &Vec<String>) {
+async fn fire_a_bullet(
+    url: &str,
+    target: &Destinations,
+    tags: &[String],
+) -> Result<(), Box<dyn std::error::Error>> {
     match target {
-        Destinations::All => {
-            println!(
-                "Send this url {:?} to this destination {:?} using this tags {:?}",
-                url,
-                Destinations::All,
-                tags
-            );
-        }
-        Destinations::Foo => {
-            println!(
-                "Send this url {:?} to this destination {:?} using this tags {:?}",
-                url,
-                Destinations::Foo,
-                tags
-            );
-        }
-        Destinations::Bar => {
-            println!(
-                "Send this url {:?} to this destination {:?} using this tags {:?}",
-                url,
-                Destinations::Bar,
-                tags
-            );
+        Destinations::All => Ok(()),
+        Destinations::Turso => {
+            turso(url, tags).await?;
+            Ok(())
         }
     }
+}
+
+async fn turso(url: &str, tags: &[String]) -> Result<(), Box<dyn std::error::Error>> {
+    let local: DateTime<Local> = Local::now();
+    let created = format!("{}", local.format("%Y-%m-%d %H:%M:%S"));
+
+    let turso_db_url = std::env::var("TURSO_DATABASE_URL").expect("TURSO_DATABASE_URL must be set");
+    let turso_db_token = std::env::var("TURSO_AUTH_TOKEN").expect("TURSO_AUTH_TOKEN must be set");
+
+    let db = Builder::new_remote(turso_db_url, turso_db_token)
+        .build()
+        .await?;
+    let conn = db.connect()?;
+    conn.execute(
+        "INSERT INTO links (url, tags, created) VALUES (:url, :tags, :created)",
+        libsql::named_params! { ":url": url, ":tags": tags.join(", "), ":created": created },
+    )
+    .await?;
+
+    Ok(())
 }

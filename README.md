@@ -10,6 +10,13 @@
 
 Last stable Rust toolchain. Use [Rustup](https://rustup.rs/) to install it.
 
+#### Turso
+
+To contribute to the Turso destination, you must:
+
+1. [Create a Turso account](https://app.turso.tech).
+2. [Install Turso CLI](https://docs.turso.tech/quickstart).
+
 ### Guidelines
 
 * Use [Conventional Commits](https://www.conventionalcommits.org/).
@@ -18,11 +25,33 @@ Last stable Rust toolchain. Use [Rustup](https://rustup.rs/) to install it.
 
 ## Usage
 
-@todo
-
 ### Install
 
 @todo
+
+### Turso
+
+If you want to send URLs to Turso, you must:
+
+1. [Create a Turso account](https://app.turso.tech).
+2. Create a Turso Database.
+3. Create a Table with the following schema:
+```sql
+CREATE TABLE links (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  url TEXT,
+  tags TEXT,
+  created DATETIME
+);
+```
+4. Create a Turso Database Token and use it to populate the TURSO_AUTH_TOKEN environment variable:
+```bash
+export TURSO_AUTH_TOKEN=<TOKEN>
+```
+5. Get the Turso Database URL and use it to populate the TURSO_DATABASE_URL environment variable:
+```bash
+export TURSO_DATABASE_URL=<URL>
+```
 
 ### Execute
 
