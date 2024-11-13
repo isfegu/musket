@@ -1,10 +1,8 @@
 # Musket
 
-@todo
+Musket is a command line interface to send a URL to several destinations. Each destination handle the URL depending the nature of the destination, for example, Turso destination stores the URL in a SQLite database but LinkedIn destination publish the link in the user profile.
 
 ## Contributing
-
-@todo
 
 ### Requirements
 
@@ -12,7 +10,7 @@ Last stable Rust toolchain. Use [Rustup](https://rustup.rs/) to install it.
 
 #### Turso
 
-To contribute to the Turso destination, you must:
+The requirements to contribute to the Turso destination are:
 
 1. [Create a Turso account](https://app.turso.tech).
 2. [Install Turso CLI](https://docs.turso.tech/quickstart).
@@ -31,7 +29,7 @@ To contribute to the Turso destination, you must:
 
 ### Turso
 
-If you want to send URLs to Turso, you must:
+Before send a URL to Turso destination you must:
 
 1. [Create a Turso account](https://app.turso.tech).
 2. Create a Turso Database.

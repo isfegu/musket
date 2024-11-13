@@ -2,7 +2,6 @@ use chrono::prelude::*;
 use clap::{Parser, Subcommand};
 use libsql::Builder;
 
-/// TO DO: Add description
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 pub struct Args {
@@ -12,9 +11,7 @@ pub struct Args {
 
 #[derive(Subcommand, Debug)]
 enum Commands {
-    /// TO DO: write something about Fire Command
-    ///
-    /// TO DO: write a description
+    /// Use the Fire command to send a URL to one or more destinations. A list of tags can be specified.
     Fire {
         /// URL to send to the destinations
         #[arg(short, long)]
@@ -28,9 +25,7 @@ enum Commands {
         #[arg(short, long, value_delimiter = ',')]
         tags: Option<Vec<String>>,
     },
-    /// TO DO: write something about FireAtWill Command
-    ///
-    /// TO DO: write a description
+    /// Use the FireAtWill command to send a URL to all the destinations enabled by Musket. A list of tags can be specified.
     FireAtWill {
         /// URL to send to the destinations
         #[arg(short, long)]
@@ -42,6 +37,7 @@ enum Commands {
     },
 }
 
+/// Enum with all the enabled destinations
 #[derive(Debug, Clone, clap::ValueEnum)]
 enum Destinations {
     All,
