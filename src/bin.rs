@@ -1,55 +1,16 @@
 use chrono::prelude::*;
-use clap::{Parser, Subcommand};
+use clap::Parser;
+use cli::{Cli, Command, Destinations};
 use libsql::Builder;
 
-#[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
-pub struct Args {
-    #[command(subcommand)]
-    cmd: Commands,
-}
-
-#[derive(Subcommand, Debug)]
-enum Commands {
-    /// Use the Fire command to send a URL to one or more destinations. A list of tags can be specified.
-    Fire {
-        /// URL to send to the destinations
-        #[arg(short, long)]
-        url: String,
-
-        /// Place to send (publish, save, etc.) the URL. At least, one destination must be choosed.
-        #[arg(short, long, value_delimiter = ',')]
-        destination: Option<Vec<Destinations>>,
-
-        /// The tags to be used in the destinations.
-        #[arg(short, long, value_delimiter = ',')]
-        tags: Option<Vec<String>>,
-    },
-    /// Use the FireAtWill command to send a URL to all the destinations enabled by Musket. A list of tags can be specified.
-    FireAtWill {
-        /// URL to send to the destinations
-        #[arg(short, long)]
-        url: String,
-
-        /// The tags to be used in the destinations.
-        #[arg(short, long, value_delimiter = ',')]
-        tags: Option<Vec<String>>,
-    },
-}
-
-/// Enum with all the enabled destinations
-#[derive(Debug, Clone, clap::ValueEnum)]
-enum Destinations {
-    All,
-    Turso,
-}
+mod cli;
 
 #[tokio::main]
 async fn main() {
-    let args = Args::parse();
+    let cli = Cli::parse();
 
-    match args.cmd {
-        Commands::Fire {
+    match cli.cmd {
+        Command::Fire {
             url,
             destination,
             tags,
