@@ -4,9 +4,12 @@ use cli::{Cli, Command, Destinations};
 use libsql::Builder;
 
 mod cli;
+mod config;
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let cfg: config::Configuration = config::configure()?;
+
     let cli = Cli::parse();
 
     match cli.cmd {
@@ -16,7 +19,6 @@ async fn main() {
             tags,
         } => {
             let vector_of_tags = tags.unwrap_or_default();
-
             match destination {
                 Some(destinations) => {
                     for target in destinations {
@@ -26,7 +28,9 @@ async fn main() {
                             &target,
                             &vector_of_tags.join(", ")
                         );
-                        fire_a_bullet(&url, &target, &vector_of_tags).await.unwrap();
+                        fire_a_bullet(&cfg, &url, &target, &vector_of_tags)
+                            .await
+                            .unwrap();
                     }
                 }
                 None => {
@@ -42,9 +46,11 @@ async fn main() {
             todo!();
         }
     }
+    Ok(())
 }
 
 async fn fire_a_bullet(
+    cfg: &config::Configuration,
     url: &str,
     target: &Destinations,
     tags: &[String],
@@ -52,18 +58,22 @@ async fn fire_a_bullet(
     match target {
         Destinations::All => Ok(()),
         Destinations::Turso => {
-            turso(url, tags).await?;
+            turso(cfg, url, tags).await?;
             Ok(())
         }
     }
 }
 
-async fn turso(url: &str, tags: &[String]) -> Result<(), Box<dyn std::error::Error>> {
+async fn turso(
+    cfg: &config::Configuration,
+    url: &str,
+    tags: &[String],
+) -> Result<(), Box<dyn std::error::Error>> {
     let local: DateTime<Local> = Local::now();
     let created = format!("{}", local.format("%Y-%m-%d %H:%M:%S"));
 
-    let turso_db_url = std::env::var("TURSO_DATABASE_URL").expect("TURSO_DATABASE_URL must be set");
-    let turso_db_token = std::env::var("TURSO_AUTH_TOKEN").expect("TURSO_AUTH_TOKEN must be set");
+    let turso_db_url = cfg.turso.url.to_string();
+    let turso_db_token = cfg.turso.token.to_string();
 
     let db = Builder::new_remote(turso_db_url, turso_db_token)
         .build()
