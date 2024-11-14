@@ -30,15 +30,16 @@ async fn main() {
                     }
                 }
                 None => {
-                    println!(
-                        "The url \"{}\" cannot be sent to a non-existing destination. Set at least one destination.",
+                    eprintln!(
+                        "The url \"{}\" cannot be sent to a non-existing destination. Set, at least, one valid destination.",
                         url
                     );
+                    std::process::exit(1);
                 }
             }
         }
-        _ => {
-            todo!()
+        Command::FireAtWill { url: _, tags: _ } => {
+            todo!();
         }
     }
 }
