@@ -1,10 +1,10 @@
-use chrono::prelude::*;
 use clap::Parser;
 use cli::{Cli, Command, Destinations};
-use libsql::Builder;
+use destinations::{turso::Turso, Destination};
 
 mod cli;
 mod config;
+mod destinations;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -22,15 +22,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             match destination {
                 Some(destinations) => {
                     for target in destinations {
-                        println!(
-                            "Sending \"{}\" to {:?} using this tags \"{}\"",
-                            url,
-                            &target,
-                            &vector_of_tags.join(", ")
-                        );
-                        fire_a_bullet(&cfg, &url, &target, &vector_of_tags)
-                            .await
-                            .unwrap();
+                        match target {
+                            Destinations::All => {}
+                            Destinations::Turso => {
+                                let mut turso = Turso::new();
+                                turso.configure(&cfg.turso.url, &cfg.turso.token);
+                                turso.fire(&url, &vector_of_tags).await?;
+                            }
+                        }
                     }
                 }
                 None => {
@@ -46,44 +45,5 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             todo!();
         }
     }
-    Ok(())
-}
-
-async fn fire_a_bullet(
-    cfg: &config::Configuration,
-    url: &str,
-    target: &Destinations,
-    tags: &[String],
-) -> Result<(), Box<dyn std::error::Error>> {
-    match target {
-        Destinations::All => Ok(()),
-        Destinations::Turso => {
-            turso(cfg, url, tags).await?;
-            Ok(())
-        }
-    }
-}
-
-async fn turso(
-    cfg: &config::Configuration,
-    url: &str,
-    tags: &[String],
-) -> Result<(), Box<dyn std::error::Error>> {
-    let local: DateTime<Local> = Local::now();
-    let created = format!("{}", local.format("%Y-%m-%d %H:%M:%S"));
-
-    let turso_db_url = cfg.turso.url.to_string();
-    let turso_db_token = cfg.turso.token.to_string();
-
-    let db = Builder::new_remote(turso_db_url, turso_db_token)
-        .build()
-        .await?;
-    let conn = db.connect()?;
-    conn.execute(
-        "INSERT INTO links (url, tags, created) VALUES (:url, :tags, :created)",
-        libsql::named_params! { ":url": url, ":tags": tags.join(", "), ":created": created },
-    )
-    .await?;
-
     Ok(())
 }
