@@ -1,8 +1,8 @@
 use clap::Parser;
 use cli::{Cli, Command, Destinations};
-use destinations::{turso::Turso, Destination};
 
 mod cli;
+mod commands;
 mod config;
 mod destinations;
 
@@ -18,26 +18,22 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             destination,
             tags,
         } => {
+            if destination.is_none() {
+                eprintln!("The url \"{}\" cannot be sent to a non-existing destination. Set, at least, one valid destination.", url);
+                std::process::exit(1);
+            }
+
             let vector_of_tags = tags.unwrap_or_default();
-            match destination {
-                Some(destinations) => {
-                    for target in destinations {
-                        match target {
-                            Destinations::All => {}
-                            Destinations::Turso => {
-                                let mut turso = Turso::new();
-                                turso.configure(&cfg.turso.url, &cfg.turso.token);
-                                turso.fire(&url, &vector_of_tags).await?;
-                            }
-                        }
+            let destinations = destination.unwrap_or_default();
+
+            for target in destinations {
+                match target {
+                    Destinations::All => {
+                        commands::turso::execute(&cfg, &url, &vector_of_tags).await?;
                     }
-                }
-                None => {
-                    eprintln!(
-                        "The url \"{}\" cannot be sent to a non-existing destination. Set, at least, one valid destination.",
-                        url
-                    );
-                    std::process::exit(1);
+                    Destinations::Turso => {
+                        commands::turso::execute(&cfg, &url, &vector_of_tags).await?;
+                    }
                 }
             }
         }

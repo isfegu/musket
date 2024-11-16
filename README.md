@@ -1,6 +1,6 @@
 # Musket
 
-Musket is a command line interface to send a URL to several destinations. Each destination handle the URL depending the nature of the destination, for example, Turso destination stores the URL in a SQLite database but LinkedIn destination publish the link in the user profile.
+__Musket__ is a command line interface to send a URL to several destinations. Each destination handle the URL depending the nature of the destination, for example, Turso destination stores the URL in Turso Service (a SQLite database SaaS) and LinkedIn destination publish the link in the user profile.
 
 ## Contributing
 
@@ -18,29 +18,57 @@ Last stable Rust toolchain. Use [Rustup](https://rustup.rs/) to install it.
 
 To add new destinations you must follow the next steps:
 
+> Info: Use the Turso destination files to see the code of the following steps.
+
 #### 1. Create a module
 
-Create a file inside [`destinations`](./src/destinations/) folder, for example: `turso.rs`. This file must:
+Create a file with the name of the new destination inside [`destinations`](./src/destinations/) folder. 
 
-1. have a `struct` with the fields needed to configure the destination and implementing the `Default` trait for this fields.
-2. implement a configure function that fill the configuration fields of the `struct`.
+This file must:
+
+1. have a `struct` with the fields needed to configure the destination. This `struct` must implements the `Default` trait for this fields (using `#[derive(Default)]` should be enough).
+2. implement a `configure` function that fill the configuration fields of the `struct`.
 3. implement `Destination` trait. 
 
-#### 2. Add the module
-
-Add the new module as a public module in the `destination` module inside the [`mod.rs`](./src/destinations/mod.rs) file.
+Once created, add the new module as a public module in the `destination` module inside the [`mod.rs`](./src/destinations/mod.rs) file.
 
 ```rust
 pub mod turso;
 ```
 
-#### 3. Manage new destination from the CLI
+#### 2. Manage new destination from the CLI
 
 Add the new destination as a variant of the enum `Destinations` inside the [`cli.rs`](./src/cli.rs) file.
 
+```rust
+pub enum Destinations {
+    All,
+    Turso,
+    // Add here the new destination
+}
+```
+
+#### 3. Create a Command
+
+Create a file with the name of the new destination inside [`commands`](./src/commands/) folder. 
+
+This file must implement a function named `execute` in charge of perform the sending of the URL (and tags if needed) to the destination.
+
+Once created, add the new module as a public module in the `commands` module inside the [`mod.rs`](./src/commands/mod.rs) file.
+
+```rust
+pub mod turso;
+```
+
 #### 4. Manage new destination from the main
 
-Add the new destination as a pattern matching of the `Fire` command, and add the necessary code to send the URL to the destination.
+Add the new destination as a pattern matching of the `Fire` command, and add a call to the command created above.
+
+```rust
+Destinations::Turso => {
+    commands::turso::execute(&cfg, &url, &vector_of_tags).await?;
+}
+```
 
 ## Usage
 
@@ -63,14 +91,17 @@ CREATE TABLE links (
   created DATETIME
 );
 ```
-4. Create a Turso Database Token and use it to populate the TURSO_AUTH_TOKEN environment variable:
-```bash
-export TURSO_AUTH_TOKEN=<TOKEN>
-```
-5. Get the Turso Database URL and use it to populate the TURSO_DATABASE_URL environment variable:
-```bash
-export TURSO_DATABASE_URL=<URL>
-```
+4. Fill the `turso` section in the __Musket__ [configuration file](#configuration-file). You must provide the database `url` and the turso `token`.
+
+### Configuration file
+
+__Musket__ uses a configuration file named `config.toml`. This file is placed in the directory `musket` inside the users's home. This home depends of the operating system:
+
+- [GNU/Linux](https://www.freedesktop.org/wiki/Software/xdg-user-dirs/)
+- [MS Windows](https://learn.microsoft.com/es-es/windows/win32/shell/knownfolderid?redirectedfrom=MSDN)
+- [macOS](https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileSystemOverview/FileSystemOverview.html#//apple_ref/doc/uid/TP40010672-CH2-SW6)
+
+If the configuration file doesn't exists it will be created (empty) when __Musket__ is executed. You can update the file manually to configure __Musket__ to your needs.
 
 ### Execute
 
