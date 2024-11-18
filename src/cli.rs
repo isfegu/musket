@@ -39,5 +39,6 @@ pub enum Command {
 #[derive(Debug, Clone, clap::ValueEnum)]
 pub enum Destinations {
     All,
+    LinkedIn,
     Turso,
 }

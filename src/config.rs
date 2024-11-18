@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Default, Debug, Serialize, Deserialize)]
 pub struct Configuration {
+    pub linkedin: LinkedinConfiguration,
     pub turso: TursoConfiguration,
 }
 
@@ -9,6 +10,14 @@ pub struct Configuration {
 pub struct TursoConfiguration {
     pub url: String,
     pub token: String,
+}
+
+#[derive(Default, Debug, Serialize, Deserialize)]
+pub struct LinkedinConfiguration {
+    pub token: String,
+    pub author: String,
+    pub share_commentary: String,
+    pub visibility: String,
 }
 
 pub fn configure() -> Result<Configuration, confy::ConfyError> {
