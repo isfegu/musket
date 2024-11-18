@@ -96,7 +96,11 @@ Destinations::Turso => {
 
 ### Install
 
-@todo
+#### From Cargo
+
+```bash
+cargo install musket
+```
 
 ### LinkedIn
 
