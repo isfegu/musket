@@ -20,7 +20,29 @@ To add new destinations you must follow the next steps:
 
 > Info: Use the Turso destination files to see the code of the following steps.
 
-#### 1. Create a module
+#### 1. Define the configuration
+
+Add a `struct` to define the destination configuration to be placed in the configuration file.
+
+```rust
+#[derive(Default, Debug, Serialize, Deserialize)]
+pub struct TursoConfiguration {
+    pub url: String,
+    pub token: String,
+}
+```
+
+Add a field in the `Configuration` `struct` with the destination as a `name` and the destination configuration as a `type`:
+
+```rust
+#[derive(Default, Debug, Serialize, Deserialize)]
+pub struct Configuration {
+    pub turso: TursoConfiguration,
+    // Add here the new destination configuration
+}
+```
+
+#### 2. Create a module
 
 Create a file with the name of the new destination inside [`destinations`](./src/destinations/) folder. 
 
@@ -36,7 +58,7 @@ Once created, add the new module as a public module in the `destination` module 
 pub mod turso;
 ```
 
-#### 2. Manage new destination from the CLI
+#### 3. Manage new destination from the CLI
 
 Add the new destination as a variant of the enum `Destinations` inside the [`cli.rs`](./src/cli.rs) file.
 
@@ -48,7 +70,7 @@ pub enum Destinations {
 }
 ```
 
-#### 3. Create a Command
+#### 4. Create a Command
 
 Create a file with the name of the new destination inside [`commands`](./src/commands/) folder. 
 
@@ -60,7 +82,7 @@ Once created, add the new module as a public module in the `commands` module ins
 pub mod turso;
 ```
 
-#### 4. Manage new destination from the main
+#### 5. Manage new destination from the main
 
 Add the new destination as a pattern matching of the `Fire` command, and add a call to the command created above.
 
@@ -75,6 +97,19 @@ Destinations::Turso => {
 ### Install
 
 @todo
+
+### LinkedIn
+
+Before send a URL to LinkedIn destination you must:
+
+1. Create a [LinkedIn Application](https://www.linkedin.com/developers) with the _Share on LinkedIn_ and _Sign In with LinkedIn using OpenID Connect_ products added to the application.
+2. Create an [access token](https://www.linkedin.com/developers/tools/oauth) with the _email_, _openid_, _profile_, _w_member_social_ permissions.
+3. Get the [author identifier](https://learn.microsoft.com/es-es/linkedin/consumer/integrations/self-serve/sign-in-with-linkedin-v2#api-request-to-retreive-member-details) (doing a request to the userinfo endpoint using the access token).
+4. Fill the `linkedin` section in the __Musket__ [configuration file](#configuration-file). You must provide:
+  - the `token` used as a bearer authentication.
+  - the `author` identifier.
+  - `share_commentary` is the text that will be shown in the post along the link.
+  - `visibility`, can be "PUBLIC" or "CONNECTIONS".
 
 ### Turso
 
@@ -112,13 +147,13 @@ $ musket fire --url <URL> --destination <DESTINATION> --tags <tags>
 For example:
 
 ```bash
-$ musket fire --url wikipedia.com --destination foo,bar --tags one,two,three
+$ musket fire --url wikipedia.org --destination foo,bar --tags one,two,three
 ```
 
 or
 
 ```bash
-$ musket fire --url wikipedia.com -d foo -d bar -t one -t two -t three
+$ musket fire --url wikipedia.org -d foo -d bar -t one -t two -t three
 ```
 
 Run `musket -h` to get the details of each subcommand and arguments.
