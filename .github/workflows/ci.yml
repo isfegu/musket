@@ -1,0 +1,31 @@
+name: Automatically run CI
+
+on: [pull_request]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  check:
+    name: Check a local package and all of its dependencies for errors
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: dtolnay/rust-toolchain@stable
+    - run: cargo check --workspace
+
+  fmt:
+    name: Run rustfmt in check mode
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: dtolnay/rust-toolchain@stable
+    - run: cargo fmt --check
+
+  clippy:
+    name: Checks a package to catch common mistakes and improve the Rust code
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: dtolnay/rust-toolchain@stable
+    - run: cargo clippy --no-deps
