@@ -104,7 +104,7 @@ cargo install musket
 
 ### LinkedIn
 
-Before send a URL to LinkedIn destination you must:
+Before sending a URL to LinkedIn destination you must:
 
 1. Create a [LinkedIn Application](https://www.linkedin.com/developers) with the _Share on LinkedIn_ and _Sign In with LinkedIn using OpenID Connect_ products added to the application.
 2. Create an [access token](https://www.linkedin.com/developers/tools/oauth) with the _email_, _openid_, _profile_, _w_member_social_ permissions.
@@ -117,7 +117,7 @@ Before send a URL to LinkedIn destination you must:
 
 ### Turso
 
-Before send a URL to Turso destination you must:
+Before sending a URL to Turso destination you must:
 
 1. [Create a Turso account](https://app.turso.tech).
 2. Create a Turso Database.
