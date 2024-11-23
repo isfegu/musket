@@ -41,22 +41,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
             }
         }
-        Command::FireAtWill { url, tags } => {
-            let vector_of_tags = tags.unwrap_or_default();
-
-            commands::turso::execute(&cfg, &url, &vector_of_tags).await?;
-            commands::linkedin::execute(&cfg, &url, &vector_of_tags).await?;
-        }
     }
     Ok(())
 }
-
-/*
-https://github.com/kohbis/rslack/blob/main/src/slack/mod.rs
-https://learn.microsoft.com/es-es/linkedin/consumer/integrations/self-serve/share-on-linkedin
-https://learn.microsoft.com/es-es/linkedin/consumer/integrations/self-serve/sign-in-with-linkedin-v2
-https://github.com/linkedin-developers/linkedin-api-js-client
-https://docs.rs/reqwest/0.12.9/reqwest/
-https://blog.logrocket.com/making-http-requests-rust-reqwest/
-https://github.com/seanmonstar/reqwest/blob/master/examples/form.rs
-*/
