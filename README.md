@@ -2,6 +2,78 @@
 
 __Musket__ is a command line interface to send a URL to several destinations. Each destination handle the URL depending the nature of the destination, for example, Turso destination stores the URL in Turso Service (a SQLite database SaaS) and LinkedIn destination publish the link in the user profile.
 
+## Usage
+
+### Installation
+
+#### From Cargo
+
+```bash
+cargo install musket
+```
+
+### Requirements
+
+#### LinkedIn
+
+Before sending a URL to LinkedIn destination you must:
+
+1. Create a [LinkedIn Application](https://www.linkedin.com/developers) with the _Share on LinkedIn_ and _Sign In with LinkedIn using OpenID Connect_ products added to the application.
+2. Create an [access token](https://www.linkedin.com/developers/tools/oauth) with the _email_, _openid_, _profile_, _w_member_social_ permissions.
+3. Get the [author identifier](https://learn.microsoft.com/es-es/linkedin/consumer/integrations/self-serve/sign-in-with-linkedin-v2#api-request-to-retreive-member-details) (doing a request to the userinfo endpoint using the access token).
+4. Fill the `linkedin` section in the __Musket__ [configuration file](#configuration-file). You must provide:
+  - the `token` used as a bearer authentication.
+  - the `author` identifier.
+  - `share_commentary` is the text that will be shown in the post along the link.
+  - `visibility`, can be "PUBLIC" or "CONNECTIONS".
+
+#### Turso
+
+Before sending a URL to Turso destination you must:
+
+1. [Create a Turso account](https://app.turso.tech).
+2. Create a Turso Database.
+3. Create a Table with the following schema:
+```sql
+CREATE TABLE links (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  url TEXT,
+  tags TEXT,
+  created DATETIME
+);
+```
+4. Fill the `turso` section in the __Musket__ [configuration file](#configuration-file). You must provide the database `url` and the turso `token`.
+
+### Configuration file
+
+__Musket__ uses a configuration file named `config.toml`. This file is placed in the directory `musket` inside the users's home. This home depends of the operating system:
+
+- [GNU/Linux](https://www.freedesktop.org/wiki/Software/xdg-user-dirs/)
+- [MS Windows](https://learn.microsoft.com/es-es/windows/win32/shell/knownfolderid?redirectedfrom=MSDN)
+- [macOS](https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileSystemOverview/FileSystemOverview.html#//apple_ref/doc/uid/TP40010672-CH2-SW6)
+
+If the configuration file doesn't exists it will be created (empty) when __Musket__ is executed. You can update the file manually to configure __Musket__ to your needs.
+
+### Execute
+
+```bash
+$ musket fire --url <URL> --destination <DESTINATION> --tags <tags>
+```
+
+For example:
+
+```bash
+$ musket fire --url wikipedia.org --destination linked-in,turso --tags one,two,three
+```
+
+or
+
+```bash
+$ musket fire --url wikipedia.org -d linked-in -d turso -t one -t two -t three
+```
+
+Run `musket -h` to get the details of each subcommand and arguments.
+
 ## Contributing
 
 ### Requirements
@@ -48,9 +120,8 @@ Create a file with the name of the new destination inside [`destinations`](./src
 
 This file must:
 
-1. have a `struct` with the fields needed to configure the destination. This `struct` must implements the `Default` trait for this fields (using `#[derive(Default)]` should be enough).
-2. implement a `configure` function that fill the configuration fields of the `struct`.
-3. implement `Destination` trait. 
+1. have a `struct` with the fields needed to configure the destination. This fields must be `pub`.
+2. implement `Destination` trait. 
 
 Once created, add the new module as a public module in the `destination` module inside the [`mod.rs`](./src/destinations/mod.rs) file.
 
@@ -91,73 +162,3 @@ Destinations::Turso => {
     commands::turso::execute(&cfg, &url, &vector_of_tags).await?;
 }
 ```
-
-## Usage
-
-### Install
-
-#### From Cargo
-
-```bash
-cargo install musket
-```
-
-### LinkedIn
-
-Before send a URL to LinkedIn destination you must:
-
-1. Create a [LinkedIn Application](https://www.linkedin.com/developers) with the _Share on LinkedIn_ and _Sign In with LinkedIn using OpenID Connect_ products added to the application.
-2. Create an [access token](https://www.linkedin.com/developers/tools/oauth) with the _email_, _openid_, _profile_, _w_member_social_ permissions.
-3. Get the [author identifier](https://learn.microsoft.com/es-es/linkedin/consumer/integrations/self-serve/sign-in-with-linkedin-v2#api-request-to-retreive-member-details) (doing a request to the userinfo endpoint using the access token).
-4. Fill the `linkedin` section in the __Musket__ [configuration file](#configuration-file). You must provide:
-  - the `token` used as a bearer authentication.
-  - the `author` identifier.
-  - `share_commentary` is the text that will be shown in the post along the link.
-  - `visibility`, can be "PUBLIC" or "CONNECTIONS".
-
-### Turso
-
-Before send a URL to Turso destination you must:
-
-1. [Create a Turso account](https://app.turso.tech).
-2. Create a Turso Database.
-3. Create a Table with the following schema:
-```sql
-CREATE TABLE links (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  url TEXT,
-  tags TEXT,
-  created DATETIME
-);
-```
-4. Fill the `turso` section in the __Musket__ [configuration file](#configuration-file). You must provide the database `url` and the turso `token`.
-
-### Configuration file
-
-__Musket__ uses a configuration file named `config.toml`. This file is placed in the directory `musket` inside the users's home. This home depends of the operating system:
-
-- [GNU/Linux](https://www.freedesktop.org/wiki/Software/xdg-user-dirs/)
-- [MS Windows](https://learn.microsoft.com/es-es/windows/win32/shell/knownfolderid?redirectedfrom=MSDN)
-- [macOS](https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileSystemOverview/FileSystemOverview.html#//apple_ref/doc/uid/TP40010672-CH2-SW6)
-
-If the configuration file doesn't exists it will be created (empty) when __Musket__ is executed. You can update the file manually to configure __Musket__ to your needs.
-
-### Execute
-
-```bash
-$ musket fire --url <URL> --destination <DESTINATION> --tags <tags>
-```
-
-For example:
-
-```bash
-$ musket fire --url wikipedia.org --destination foo,bar --tags one,two,three
-```
-
-or
-
-```bash
-$ musket fire --url wikipedia.org -d foo -d bar -t one -t two -t three
-```
-
-Run `musket -h` to get the details of each subcommand and arguments.

@@ -23,16 +23,6 @@ pub enum Command {
         #[arg(short, long, value_delimiter = ',')]
         tags: Option<Vec<String>>,
     },
-    /// Use the FireAtWill command to send a URL to all the destinations enabled by Musket. A list of tags can be specified.
-    FireAtWill {
-        /// URL to send to the destinations
-        #[arg(short, long)]
-        url: String,
-
-        /// The tags to be used in the destinations.
-        #[arg(short, long, value_delimiter = ',')]
-        tags: Option<Vec<String>>,
-    },
 }
 
 /// Enum with all the enabled destinations

@@ -8,8 +8,10 @@ pub async fn execute(
     url: &str,
     vector_of_tags: &[String],
 ) -> Result<(), Box<dyn std::error::Error>> {
-    let mut turso = Turso::new();
-    turso.configure(&cfg.turso.url, &cfg.turso.token);
+    let turso = Turso {
+        url: cfg.turso.url.to_string(),
+        token: cfg.turso.token.to_string(),
+    };
     turso.fire(url, vector_of_tags).await?;
     println!("The url \"{}\" has been sent to Turso.", url);
     Ok(())
