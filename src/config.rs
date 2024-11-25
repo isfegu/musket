@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use serde::{Deserialize, Serialize};
 
 #[derive(Default, Debug, Serialize, Deserialize)]
@@ -23,4 +25,8 @@ pub struct LinkedinConfiguration {
 pub fn configure() -> Result<Configuration, confy::ConfyError> {
     let cfg: Configuration = confy::load("musket", "config")?;
     Ok(cfg)
+}
+
+pub fn get_configuration_path() -> Result<PathBuf, confy::ConfyError> {
+    confy::get_configuration_file_path("musket", "config")
 }

@@ -4,15 +4,31 @@ __Musket__ is a command line interface to send a URL to several destinations. Ea
 
 ## Usage
 
-### Installation
-
-#### From Cargo
+### 1.- Install
 
 ```bash
 cargo install musket
 ```
 
-### Requirements
+### 2.- Create the configuration file
+
+Execute
+
+```bash
+$ musket load
+```
+
+to create the configuration file.
+
+__Musket__ uses a configuration file named `config.toml`. This file is placed in the directory `musket` inside the users's home. This home depends of the operating system:
+
+- [GNU/Linux](https://www.freedesktop.org/wiki/Software/xdg-user-dirs/)
+- [MS Windows](https://learn.microsoft.com/es-es/windows/win32/shell/knownfolderid?redirectedfrom=MSDN)
+- [macOS](https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileSystemOverview/FileSystemOverview.html#//apple_ref/doc/uid/TP40010672-CH2-SW6)
+
+> The `musket load` command will display the full path to the configuration file.
+
+### 3.- Configure the destinations
 
 #### LinkedIn
 
@@ -21,11 +37,11 @@ Before sending a URL to LinkedIn destination you must:
 1. Create a [LinkedIn Application](https://www.linkedin.com/developers) with the _Share on LinkedIn_ and _Sign In with LinkedIn using OpenID Connect_ products added to the application.
 2. Create an [access token](https://www.linkedin.com/developers/tools/oauth) with the _email_, _openid_, _profile_, _w_member_social_ permissions.
 3. Get the [author identifier](https://learn.microsoft.com/es-es/linkedin/consumer/integrations/self-serve/sign-in-with-linkedin-v2#api-request-to-retreive-member-details) (doing a request to the userinfo endpoint using the access token).
-4. Fill the `linkedin` section in the __Musket__ [configuration file](#configuration-file). You must provide:
-  - the `token` used as a bearer authentication.
-  - the `author` identifier.
-  - `share_commentary` is the text that will be shown in the post along the link.
-  - `visibility`, can be "PUBLIC" or "CONNECTIONS".
+4. Fill the `linkedin` section in the __Musket__ [configuration file](#2--create-the-configuration-file). You must provide:
+   - the `token` used as a bearer authentication.
+   - the `author` identifier.
+   - `share_commentary` is the text that will be shown in the post along the link.
+   - `visibility`, can be "PUBLIC" or "CONNECTIONS".
 
 #### Turso
 
@@ -42,19 +58,10 @@ CREATE TABLE links (
   created DATETIME
 );
 ```
-4. Fill the `turso` section in the __Musket__ [configuration file](#configuration-file). You must provide the database `url` and the turso `token`.
+4. Fill the `turso` section in the __Musket__ [configuration file](#2--create-the-configuration-file). You must provide the database `url` and the turso `token`.
 
-### Configuration file
 
-__Musket__ uses a configuration file named `config.toml`. This file is placed in the directory `musket` inside the users's home. This home depends of the operating system:
-
-- [GNU/Linux](https://www.freedesktop.org/wiki/Software/xdg-user-dirs/)
-- [MS Windows](https://learn.microsoft.com/es-es/windows/win32/shell/knownfolderid?redirectedfrom=MSDN)
-- [macOS](https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileSystemOverview/FileSystemOverview.html#//apple_ref/doc/uid/TP40010672-CH2-SW6)
-
-If the configuration file doesn't exists it will be created (empty) when __Musket__ is executed. You can update the file manually to configure __Musket__ to your needs.
-
-### Execute
+### 4.- Sending a URL
 
 ```bash
 $ musket fire --url <URL> --destination <DESTINATION> --tags <tags>
