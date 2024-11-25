@@ -8,11 +8,23 @@ mod destinations;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let cfg: config::Configuration = config::configure()?;
-
     let cli = Cli::parse();
 
     match cli.cmd {
+        Command::Load => match config::configure() {
+            Ok(_) => {
+                println!(
+                    "The configuration file has been created here: \"{}\".",
+                    config::get_configuration_path()
+                        .unwrap_or_default()
+                        .to_string_lossy()
+                );
+            }
+            Err(e) => {
+                eprintln!("The configuration file cannot be created due to \"{}\".", e);
+                std::process::exit(1);
+            }
+        },
         Command::Fire {
             url,
             destination,
@@ -22,6 +34,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 eprintln!("The url \"{}\" cannot be sent to a non-existing destination. Set, at least, one valid destination.", url);
                 std::process::exit(1);
             }
+
+            let cfg: config::Configuration = config::configure()?;
 
             let vector_of_tags = tags.unwrap_or_default();
             let destinations = destination.unwrap_or_default();
