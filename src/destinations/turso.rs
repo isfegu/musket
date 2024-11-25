@@ -2,21 +2,9 @@ use super::Destination;
 use chrono::prelude::*;
 use libsql::Builder;
 
-#[derive(Default)]
 pub struct Turso {
-    url: String,
-    token: String,
-}
-
-impl Turso {
-    pub fn new() -> Self {
-        Default::default()
-    }
-
-    pub fn configure(&mut self, url: &str, token: &str) {
-        self.url = url.to_string();
-        self.token = token.to_string();
-    }
+    pub url: String,
+    pub token: String,
 }
 
 impl Destination for Turso {

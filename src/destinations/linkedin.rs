@@ -1,31 +1,11 @@
 use super::Destination;
 use serde_json::json;
 
-#[derive(Default)]
 pub struct LinkedIn {
-    token: String,
-    author: String,
-    share_commentary: String,
-    visibility: String,
-}
-
-impl LinkedIn {
-    pub fn new() -> Self {
-        Default::default()
-    }
-
-    pub fn configure(
-        &mut self,
-        token: &str,
-        author: &str,
-        share_commentary: &str,
-        visibility: &str,
-    ) {
-        self.token = token.to_string();
-        self.author = author.to_string();
-        self.share_commentary = share_commentary.to_string();
-        self.visibility = visibility.to_string();
-    }
+    pub token: String,
+    pub author: String,
+    pub share_commentary: String,
+    pub visibility: String,
 }
 
 impl Destination for LinkedIn {
