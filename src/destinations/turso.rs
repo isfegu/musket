@@ -8,7 +8,7 @@ pub struct Turso {
 }
 
 impl Destination for Turso {
-    async fn fire(&self, url: &str, tags: &[String]) -> Result<(), Box<dyn std::error::Error>> {
+    async fn fire(&self, url: &str, tags: &[String]) -> Result<(), String> {
         let local: DateTime<Local> = Local::now();
         let created = format!("{}", local.format("%Y-%m-%d %H:%M:%S"));
 
@@ -17,13 +17,17 @@ impl Destination for Turso {
 
         let db = Builder::new_remote(turso_db_url, turso_db_token)
             .build()
-            .await?;
-        let conn = db.connect()?;
+            .await
+            .map_err(|err| format!("{}.", err))?;
+
+        let conn = db.connect().map_err(|err| format!("{}.", err))?;
+
         conn.execute(
             "INSERT INTO links (url, tags, created) VALUES (:url, :tags, :created)",
             libsql::named_params! { ":url": url, ":tags": tags.join(", "), ":created": created },
         )
-        .await?;
+        .await
+        .map_err(|err| format!("{}.", err))?;
 
         Ok(())
     }
