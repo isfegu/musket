@@ -10,7 +10,7 @@ pub async fn run() -> Result<(), String> {
     let cli = Cli::parse();
 
     match cli.cmd {
-        Command::Load => match config::configure() {
+        Command::Init => match config::configure() {
             Ok(_) => {
                 println!(
                     "The configuration file has been created here: \"{}\". \nTo start using Musket, please fill in the configuration file with your data.",
