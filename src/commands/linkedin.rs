@@ -7,7 +7,7 @@ pub async fn execute(
     cfg: &config::Configuration,
     url: &str,
     vector_of_tags: &[String],
-) -> Result<(), Box<dyn std::error::Error>> {
+) -> Result<(), String> {
     let linkedin = LinkedIn {
         token: cfg.linkedin.token.to_string(),
         author: cfg.linkedin.author.to_string(),

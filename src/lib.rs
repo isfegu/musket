@@ -6,22 +6,24 @@ mod commands;
 mod config;
 mod destinations;
 
-pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
+pub async fn run() -> Result<(), String> {
     let cli = Cli::parse();
 
     match cli.cmd {
         Command::Load => match config::configure() {
             Ok(_) => {
                 println!(
-                  "The configuration file has been created here: \"{}\". To start using Musket, please fill in the configuration file with your data.",
-                  config::get_configuration_path()
-                      .unwrap_or_default()
-                      .to_string_lossy()
-              );
+                    "The configuration file has been created here: \"{}\". \nTo start using Musket, please fill in the configuration file with your data.",
+                    config::get_configuration_path()
+                        .unwrap_or_default()
+                        .to_string_lossy()
+                );
             }
             Err(e) => {
-                eprintln!("The configuration file cannot be created due to \"{}\".", e);
-                std::process::exit(1);
+                return Err(format!(
+                    "The configuration file cannot be created due to \"{}\".",
+                    e
+                ));
             }
         },
         Command::Fire {
@@ -30,11 +32,10 @@ pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
             tags,
         } => {
             if destination.is_none() {
-                eprintln!("The url \"{}\" cannot be sent to a non-existing destination. Set, at least, one valid destination.", url);
-                std::process::exit(1);
+                return Err(format!("The url \"{}\" cannot be sent to a non-existing destination. Set, at least, one valid destination.", url));
             }
 
-            let cfg = config::configure()?;
+            let cfg = config::configure().map_err(|err| format!("{}.", err))?;
 
             let vector_of_tags = tags.unwrap_or_default();
             let destinations = destination.unwrap_or_default();
