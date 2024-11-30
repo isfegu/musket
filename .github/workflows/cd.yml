@@ -1,4 +1,4 @@
-name: Manually publish members
+name: Manually publish to crate registry
 
 on:
   workflow_dispatch:
