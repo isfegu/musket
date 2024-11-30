@@ -1,10 +1,10 @@
-use clap::Parser;
-use cli::{Cli, Command, Destinations};
-
 mod cli;
 mod commands;
 mod config;
 mod destinations;
+
+use clap::Parser;
+use cli::{Cli, Command, Destinations};
 
 pub async fn run() -> Result<(), String> {
     let cli = Cli::parse();
