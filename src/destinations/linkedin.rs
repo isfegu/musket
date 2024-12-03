@@ -1,4 +1,4 @@
-use super::Destination;
+use super::{Destination, DestinationError};
 use serde_json::json;
 
 pub struct LinkedIn {
@@ -8,8 +8,16 @@ pub struct LinkedIn {
     pub visibility: String,
 }
 
+impl From<reqwest::Error> for DestinationError {
+    fn from(e: reqwest::Error) -> Self {
+        DestinationError::LinkedIn {
+            message: format!("The url cannot be sent to LinkedIn due to {}.", e),
+        }
+    }
+}
+
 impl Destination for LinkedIn {
-    async fn fire(&self, url: &str, tags: &[String]) -> Result<(), String> {
+    async fn fire(&self, url: &str, tags: &[String]) -> Result<(), DestinationError> {
         let mut share_commentary = self.share_commentary.clone();
 
         if !tags.is_empty() {
@@ -49,8 +57,7 @@ impl Destination for LinkedIn {
             .header("X-Restli-Protocol-Version", "2.0.0")
             .json(&json)
             .send()
-            .await
-            .map_err(|err| format!("{}.", err))?;
+            .await?;
 
         Ok(())
     }
