@@ -1,4 +1,5 @@
 use super::Destination;
+use crate::errors;
 use serde_json::json;
 
 pub struct LinkedIn {
@@ -9,7 +10,7 @@ pub struct LinkedIn {
 }
 
 impl Destination for LinkedIn {
-    async fn fire(&self, url: &str, tags: &[String]) -> Result<(), String> {
+    async fn fire(&self, url: &str, tags: &[String]) -> Result<(), errors::Musket> {
         let mut share_commentary = self.share_commentary.clone();
 
         if !tags.is_empty() {
@@ -50,7 +51,9 @@ impl Destination for LinkedIn {
             .json(&json)
             .send()
             .await
-            .map_err(|err| format!("{}.", err))?;
+            .map_err(|err| errors::Musket::Destination {
+                message: format!("{}.", err),
+            })?;
 
         Ok(())
     }
