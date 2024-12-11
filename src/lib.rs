@@ -9,22 +9,19 @@ use cli::{Cli, Command, Destinations};
 use commands::*;
 use errors::*;
 
-pub async fn run() -> Result<(), MusketError> {
+pub async fn run() -> Result<Vec<String>, MusketError> {
+    let mut success_messages: Vec<String> = vec![];
     let cli = Cli::parse();
 
     match cli.cmd {
         Command::Init => match config::configure() {
             Ok(_) => {
-                println!(
-                    "The configuration file has been created here: \"{}\". \nTo start using Musket, please fill in the configuration file with your data.",
-                    config::get_configuration_path()
-                        .unwrap_or_default()
-                        .to_string_lossy()
-                );
+                success_messages.push(format!("The configuration file has been created here: \"{}\". \nTo start using Musket, please fill in the configuration file with your data.",
+                config::get_configuration_path()
+                    .unwrap_or_default()
+                    .to_string_lossy()));
             }
-            Err(e) => {
-                return Err(e.into());
-            }
+            Err(e) => return Err(e.into()),
         },
         Command::Fire {
             url,
@@ -45,18 +42,20 @@ pub async fn run() -> Result<(), MusketError> {
             for target in destinations {
                 match target {
                     Destinations::All => {
-                        turso::execute(&cfg, &url, &vector_of_tags).await?;
-                        linkedin::execute(&cfg, &url, &vector_of_tags).await?;
+                        success_messages.push(turso::execute(&cfg, &url, &vector_of_tags).await?);
+                        success_messages
+                            .push(linkedin::execute(&cfg, &url, &vector_of_tags).await?);
                     }
                     Destinations::Turso => {
-                        turso::execute(&cfg, &url, &vector_of_tags).await?;
+                        success_messages.push(turso::execute(&cfg, &url, &vector_of_tags).await?);
                     }
                     Destinations::LinkedIn => {
-                        linkedin::execute(&cfg, &url, &vector_of_tags).await?;
+                        success_messages
+                            .push(linkedin::execute(&cfg, &url, &vector_of_tags).await?);
                     }
                 }
             }
         }
     }
-    Ok(())
+    Ok(success_messages)
 }

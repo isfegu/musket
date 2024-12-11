@@ -8,7 +8,7 @@ pub async fn execute(
     cfg: &config::Configuration,
     url: &str,
     vector_of_tags: &[String],
-) -> Result<(), MusketError> {
+) -> Result<String, MusketError> {
     let linkedin = LinkedIn {
         token: cfg.linkedin.token.to_string(),
         author: cfg.linkedin.author.to_string(),
@@ -16,6 +16,5 @@ pub async fn execute(
         visibility: cfg.linkedin.visibility.to_string(),
     };
     linkedin.fire(url, vector_of_tags).await?;
-    println!("The url \"{}\" has been sent to LinkedIn.", url);
-    Ok(())
+    Ok(format!("The url \"{}\" has been sent to LinkedIn.", url))
 }
