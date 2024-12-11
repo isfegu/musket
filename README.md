@@ -12,13 +12,11 @@ cargo install musket
 
 ### 2.- Create the configuration file
 
-Execute
+To create the configuration file, execute:
 
 ```bash
 $ musket load
 ```
-
-to create the configuration file.
 
 __Musket__ uses a configuration file named `config.toml`. This file is placed in the directory `musket` inside the users's home. This home depends of the operating system:
 
@@ -29,6 +27,8 @@ __Musket__ uses a configuration file named `config.toml`. This file is placed in
 > The `musket load` command will display the full path to the configuration file.
 
 ### 3.- Configure the destinations
+
+All destinations have to be configured from the [configuration file](#2--create-the-configuration-file).
 
 #### LinkedIn
 
@@ -93,15 +93,17 @@ Last stable Rust toolchain. Use [Rustup](https://rustup.rs/) to install it.
 * Use [Feature Branch](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow) creating a pull request to main.
 * Use [Semantic Versioning](https://semver.org/).
 
-### Destinations
+### Adding destinations
 
 To add new destinations you must follow the next steps:
 
-> Info: Use the Turso destination files to see the code of the following steps.
+> Info: Use the existing destinations code files as a source of information.
 
 #### 1. Define the configuration
 
-Add a `struct` to define the destination configuration to be placed in the configuration file.
+In the [`config.rs`](./src/config.rs) file, add a `struct` to define the new destination configuration.
+
+For example:
 
 ```rust
 #[derive(Default, Debug, Serialize, Deserialize)]
@@ -116,6 +118,7 @@ Add a field in the `Configuration` `struct` with the destination as a `name` and
 ```rust
 #[derive(Default, Debug, Serialize, Deserialize)]
 pub struct Configuration {
+    pub linkedin: LinkedinConfiguration,
     pub turso: TursoConfiguration,
     // Add here the new destination configuration
 }
@@ -127,22 +130,27 @@ Create a file with the name of the new destination inside [`destinations`](./src
 
 This file must:
 
-1. have a `struct` with the fields needed to configure the destination. This fields must be `pub`.
-2. implement `Destination` trait. 
+1. have a public `struct` with the fields needed to configure the destination. This fields must be `pub`.
+2. implement `Destination` trait.
+3. implement `From` trait for `DestinationError`.
 
 Once created, add the new module as a public module in the `destination` module inside the [`mod.rs`](./src/destinations/mod.rs) file.
 
+For example:
+
 ```rust
+pub mod linkedin;
 pub mod turso;
 ```
 
 #### 3. Manage new destination from the CLI
 
-Add the new destination as a variant of the enum `Destinations` inside the [`cli.rs`](./src/cli.rs) file.
+In the [`cli.rs`](./src/cli.rs) file, add the new destination as a variant of the enum `Destinations`.
 
 ```rust
 pub enum Destinations {
     All,
+    LinkedIn,
     Turso,
     // Add here the new destination
 }
@@ -156,16 +164,32 @@ This file must implement a function named `execute` in charge of perform the sen
 
 Once created, add the new module as a public module in the `commands` module inside the [`mod.rs`](./src/commands/mod.rs) file.
 
+For example:
+
 ```rust
+pub mod linkedin;
 pub mod turso;
 ```
 
-#### 5. Manage new destination from the main
+#### 5. Manage new destination from the lib
 
-Add the new destination as a pattern matching of the `Fire` command, and add a call to the command created above.
+In the ['lib.rs`](./src/lib.rs) file, add the new destination as a pattern matching of the `Fire` command, and add a call to the command created above. Remember to add the command to the `Destinations::All` match.
+
+For example:
 
 ```rust
+Destinations::All => {
+    turso::execute(&cfg, &url, &vector_of_tags).await?;
+    linkedin::execute(&cfg, &url, &vector_of_tags).await?;
+}
 Destinations::Turso => {
-    commands::turso::execute(&cfg, &url, &vector_of_tags).await?;
+    turso::execute(&cfg, &url, &vector_of_tags).await?;
+}
+Destinations::LinkedIn => {
+    linkedin::execute(&cfg, &url, &vector_of_tags).await?;
 }
 ```
+
+#### 6. Update the documentation
+
+In the [`README.md`](README.md) file, add a documentation about how to configure the new destination inside the section [Configure the destinations](#3--configure-the-destinations).
