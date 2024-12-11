@@ -3,9 +3,31 @@ use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
 #[derive(Default, Debug, Serialize, Deserialize)]
+pub struct TursoConfiguration {
+    pub url: String,
+    pub token: String,
+}
+
+#[derive(Default, Debug, Serialize, Deserialize)]
+pub struct LinkedinConfiguration {
+    pub token: String,
+    pub author: String,
+    pub share_commentary: String,
+    pub visibility: String,
+}
+
+#[derive(Default, Debug, Serialize, Deserialize)]
 pub struct Configuration {
     pub linkedin: LinkedinConfiguration,
     pub turso: TursoConfiguration,
+}
+
+pub fn configure() -> Result<Configuration, ConfigurationError> {
+    Ok(confy::load("musket", "config")?)
+}
+
+pub fn get_configuration_path() -> Result<PathBuf, ConfigurationError> {
+    Ok(confy::get_configuration_file_path("musket", "config")?)
 }
 
 #[derive(Debug)]
@@ -29,26 +51,4 @@ impl From<ConfyError> for ConfigurationError {
             message: format!("The configuration file cannot be created due to \"{}\".", e),
         }
     }
-}
-
-#[derive(Default, Debug, Serialize, Deserialize)]
-pub struct TursoConfiguration {
-    pub url: String,
-    pub token: String,
-}
-
-#[derive(Default, Debug, Serialize, Deserialize)]
-pub struct LinkedinConfiguration {
-    pub token: String,
-    pub author: String,
-    pub share_commentary: String,
-    pub visibility: String,
-}
-
-pub fn configure() -> Result<Configuration, ConfigurationError> {
-    Ok(confy::load("musket", "config")?)
-}
-
-pub fn get_configuration_path() -> Result<PathBuf, ConfigurationError> {
-    Ok(confy::get_configuration_file_path("musket", "config")?)
 }
