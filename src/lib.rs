@@ -42,16 +42,20 @@ pub async fn run() -> Result<Vec<String>, MusketError> {
             for target in destinations {
                 match target {
                     Destinations::All => {
+                        success_messages.push(bluesky::execute(&cfg, &url, &vector_of_tags).await?);
+                        success_messages
+                            .push(linkedin::execute(&cfg, &url, &vector_of_tags).await?);
                         success_messages.push(turso::execute(&cfg, &url, &vector_of_tags).await?);
+                    }
+                    Destinations::Bluesky => {
+                        success_messages.push(bluesky::execute(&cfg, &url, &vector_of_tags).await?);
+                    }
+                    Destinations::LinkedIn => {
                         success_messages
                             .push(linkedin::execute(&cfg, &url, &vector_of_tags).await?);
                     }
                     Destinations::Turso => {
                         success_messages.push(turso::execute(&cfg, &url, &vector_of_tags).await?);
-                    }
-                    Destinations::LinkedIn => {
-                        success_messages
-                            .push(linkedin::execute(&cfg, &url, &vector_of_tags).await?);
                     }
                 }
             }

@@ -3,9 +3,10 @@ use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
 #[derive(Default, Debug, Serialize, Deserialize)]
-pub struct TursoConfiguration {
-    pub url: String,
-    pub token: String,
+pub struct BlueskyConfiguration {
+    pub identifier: String,
+    pub password: String,
+    pub share_commentary: String,
 }
 
 #[derive(Default, Debug, Serialize, Deserialize)]
@@ -17,7 +18,14 @@ pub struct LinkedinConfiguration {
 }
 
 #[derive(Default, Debug, Serialize, Deserialize)]
+pub struct TursoConfiguration {
+    pub url: String,
+    pub token: String,
+}
+
+#[derive(Default, Debug, Serialize, Deserialize)]
 pub struct Configuration {
+    pub bluesky: BlueskyConfiguration,
     pub linkedin: LinkedinConfiguration,
     pub turso: TursoConfiguration,
 }

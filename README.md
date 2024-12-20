@@ -15,7 +15,7 @@ cargo install musket
 To create the configuration file, execute:
 
 ```bash
-$ musket load
+$ musket init
 ```
 
 __Musket__ uses a configuration file named `config.toml`. This file is placed in the directory `musket` inside the users's home. This home depends of the operating system:
@@ -24,11 +24,21 @@ __Musket__ uses a configuration file named `config.toml`. This file is placed in
 - [MS Windows](https://learn.microsoft.com/es-es/windows/win32/shell/knownfolderid?redirectedfrom=MSDN)
 - [macOS](https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileSystemOverview/FileSystemOverview.html#//apple_ref/doc/uid/TP40010672-CH2-SW6)
 
-> The `musket load` command will display the full path to the configuration file.
+> The `musket init` command will display the full path to the configuration file.
 
 ### 3.- Configure the destinations
 
 All destinations have to be configured from the [configuration file](#2--create-the-configuration-file).
+
+#### Bluesky
+
+Before sending a URL to Bluesky destination you must:
+
+1. Create a [Bluesky](https://bsky.app/) account. For a while, __Musket__ only suports the _Bluesky Social_ provider.
+2. Fill the `bluesky` section in the __Musket__ [configuration file](#2--create-the-configuration-file). You must provide:
+   - the `identifier` is the account's username or email.
+   - the `password` of the account.
+   - `share_commentary` is the text that will be shown in the post along the link.
 
 #### LinkedIn
 
@@ -103,6 +113,8 @@ To add new destinations you must follow the next steps:
 
 In the [`config.rs`](./src/config.rs) file, add a `struct` to define the new destination configuration.
 
+> Info: Add the `struct` in alphabetical order.
+
 For example:
 
 ```rust
@@ -115,12 +127,14 @@ pub struct TursoConfiguration {
 
 Add a field in the `Configuration` `struct` with the destination as a `name` and the destination configuration as a `type`:
 
+> Info: Add the field in alphabetical order.
+
 ```rust
 #[derive(Default, Debug, Serialize, Deserialize)]
 pub struct Configuration {
     pub linkedin: LinkedinConfiguration,
     pub turso: TursoConfiguration,
-    // Add here the new destination configuration
+    // Add the new destination configuration
 }
 ```
 
@@ -128,11 +142,19 @@ pub struct Configuration {
 
 Create a file with the name of the new destination inside [`destinations`](./src/destinations/) folder. 
 
-This file must:
+##### 2.1. Develop the destination logic
 
-1. have a public `struct` with the fields needed to configure the destination. This fields must be `pub`.
-2. implement `Destination` trait.
-3. implement `From` trait for `DestinationError`.
+Add a public `struct` with the fields needed to configure the destination. This fields must be `pub`.
+
+Add all the login needed to send the URL, and the tags, to the destination in the `Destination` trait implementation.
+
+##### 2.2. Handle the errors
+
+In the [`errors.rs`](./src/destinations/errors.rs) file, add the new destination as a variant of the enum `DestinationError` and add the new destination in the pattern matching in the `Display` trait implementation of the `DestinationError` .
+
+Back in the module file, implement the `From` trait for `DestinationError`.
+
+##### 2.4. Enable the module
 
 Once created, add the new module as a public module in the `destination` module inside the [`mod.rs`](./src/destinations/mod.rs) file.
 
@@ -142,6 +164,7 @@ For example:
 pub mod linkedin;
 pub mod turso;
 ```
+> Info: Add the modules in alphabetical order.
 
 #### 3. Manage new destination from the CLI
 
@@ -155,6 +178,8 @@ pub enum Destinations {
     // Add here the new destination
 }
 ```
+
+> Info: Add the modules in alphabetical order.
 
 #### 4. Create a Command
 
@@ -189,6 +214,8 @@ Destinations::LinkedIn => {
     linkedin::execute(&cfg, &url, &vector_of_tags).await?;
 }
 ```
+
+> Info: Add the destinations in alphabetical order.
 
 #### 6. Update the documentation
 
