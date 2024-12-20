@@ -1,6 +1,6 @@
 # Musket
 
-__Musket__ is a command line interface to send a URL to several destinations. Each destination handle the URL depending the nature of the destination, for example, Turso destination stores the URL in Turso Service (a SQLite database SaaS) and LinkedIn destination publish the link in the user profile.
+__Musket__ is a command line interface to send a URL to several destinations. Each destination handle the URL depending the nature of the destination, for example, Bluesky destination post the URL in the user's feed, LinkedIn destination publish the link in the user profile and Turso destination stores the URL in Turso Service (a SQLite database SaaS).
 
 ## Usage
 
@@ -80,13 +80,13 @@ $ musket fire --url <URL> --destination <DESTINATION> --tags <tags>
 For example:
 
 ```bash
-$ musket fire --url wikipedia.org --destination linked-in,turso --tags one,two,three
+$ musket fire --url wikipedia.org --destination bluesky,linked-in,turso --tags one,two,three
 ```
 
 or
 
 ```bash
-$ musket fire --url wikipedia.org -d linked-in -d turso -t one -t two -t three
+$ musket fire --url wikipedia.org -d bluesky -d linked-in -d turso -t one -t two -t three
 ```
 
 Run `musket -h` to get the details of each subcommand and arguments.
@@ -132,6 +132,7 @@ Add a field in the `Configuration` `struct` with the destination as a `name` and
 ```rust
 #[derive(Default, Debug, Serialize, Deserialize)]
 pub struct Configuration {
+    pub bluesky: BlueskyConfiguration,
     pub linkedin: LinkedinConfiguration,
     pub turso: TursoConfiguration,
     // Add the new destination configuration
@@ -161,6 +162,7 @@ Once created, add the new module as a public module in the `destination` module 
 For example:
 
 ```rust
+pub mod bluesky;
 pub mod linkedin;
 pub mod turso;
 ```
@@ -173,6 +175,7 @@ In the [`cli.rs`](./src/cli.rs) file, add the new destination as a variant of th
 ```rust
 pub enum Destinations {
     All,
+    Bluesky,
     LinkedIn,
     Turso,
     // Add here the new destination
@@ -192,6 +195,7 @@ Once created, add the new module as a public module in the `commands` module ins
 For example:
 
 ```rust
+pub mod bluesky;
 pub mod linkedin;
 pub mod turso;
 ```
@@ -204,14 +208,18 @@ For example:
 
 ```rust
 Destinations::All => {
+    bluesky::execute(&cfg, &url, &vector_of_tags).await?;
+    linkedin::execute(&cfg, &url, &vector_of_tags).await?;
     turso::execute(&cfg, &url, &vector_of_tags).await?;
+}
+Destinations::Bluesky => {
+    bluesky::execute(&cfg, &url, &vector_of_tags).await?;
+}
+Destinations::LinkedIn => {
     linkedin::execute(&cfg, &url, &vector_of_tags).await?;
 }
 Destinations::Turso => {
     turso::execute(&cfg, &url, &vector_of_tags).await?;
-}
-Destinations::LinkedIn => {
-    linkedin::execute(&cfg, &url, &vector_of_tags).await?;
 }
 ```
 
