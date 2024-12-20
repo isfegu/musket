@@ -1,6 +1,6 @@
 [package]
 name = "musket"
-version = "0.14.0"
+version = "0.15.0"
 edition = "2021"
 repository = "https://github.com/isfegu/musket"
 description = "Musket is a command line interface to send a URL to several destinations."
@@ -8,7 +8,7 @@ license = "MIT"
 authors = ["isfegu"]
 readme = "README.md"
 homepage = "https://github.com/isfegu/musket"
-keywords = ["ssmm", "cli", "bookmarks", "turso", "linkedin"]
+keywords = ["ssmm", "cli", "bookmarks", "turso", "linkedin", "bluesky"]
 categories = ["command-line-utilities"]
 
 [[bin]]
@@ -20,6 +20,7 @@ name = "lib"
 path = "src/lib.rs"
 
 [dependencies]
+bsky-sdk = "0.1.14"
 chrono = "0.4.39"
 clap = { version = "4.5.23", features = ["derive"] }
 confy = "0.6.1"
