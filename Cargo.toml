@@ -24,8 +24,12 @@ bsky-sdk = "0.1.14"
 chrono = "0.4.39"
 clap = { version = "4.5.23", features = ["derive"] }
 confy = "0.6.1"
+crossterm = { version = "0.28.1", features = ["event-stream"] }
+futures = "0.3.31"
 libsql = "0.6.0"
+ratatui = "0.29.0"
 reqwest = { version = "0.12.9", features = ["json"] }
 serde = "1.0.216"
 serde_json = "1.0.133"
 tokio = "1.42.0"
+tui-textarea = "0.7.0"

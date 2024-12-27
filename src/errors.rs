@@ -36,3 +36,11 @@ impl From<DestinationError> for MusketError {
         }
     }
 }
+
+impl From<std::io::Error> for MusketError {
+    fn from(e: std::io::Error) -> Self {
+        MusketError::Cli {
+            message: format!("{}.", e),
+        }
+    }
+}

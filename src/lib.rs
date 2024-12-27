@@ -3,10 +3,14 @@ mod commands;
 mod config;
 mod destinations;
 mod errors;
+mod tui;
+
+use std::str::FromStr;
 
 use clap::Parser;
 use cli::{Cli, Command, Destinations};
 use commands::*;
+use config::Configuration;
 use errors::*;
 
 pub async fn run() -> Result<Vec<String>, MusketError> {
@@ -39,27 +43,54 @@ pub async fn run() -> Result<Vec<String>, MusketError> {
             let vector_of_tags = tags.unwrap_or_default();
             let destinations = destination.unwrap_or_default();
 
-            for target in destinations {
-                match target {
-                    Destinations::All => {
-                        success_messages.push(bluesky::execute(&cfg, &url, &vector_of_tags).await?);
-                        success_messages
-                            .push(linkedin::execute(&cfg, &url, &vector_of_tags).await?);
-                        success_messages.push(turso::execute(&cfg, &url, &vector_of_tags).await?);
-                    }
-                    Destinations::Bluesky => {
-                        success_messages.push(bluesky::execute(&cfg, &url, &vector_of_tags).await?);
-                    }
-                    Destinations::LinkedIn => {
-                        success_messages
-                            .push(linkedin::execute(&cfg, &url, &vector_of_tags).await?);
-                    }
-                    Destinations::Turso => {
-                        success_messages.push(turso::execute(&cfg, &url, &vector_of_tags).await?);
-                    }
-                }
+            success_messages = publish(url, destinations, vector_of_tags, cfg).await?;
+        }
+        Command::Load => {
+            let pack = tui::main().await?;
+
+            if let Some(pack) = pack {
+                let cfg = config::configure()?;
+                let destinations = pack
+                    .destinations
+                    .into_iter()
+                    .map(|s| FromStr::from_str(&s))
+                    .collect::<Result<Vec<Destinations>, _>>()?;
+                let message = pack.message.unwrap_or_default().join("\n");
+                // TODO: Add tags to the TUI
+                let tags = vec![];
+                success_messages = publish(message, destinations, tags, cfg).await?;
             }
         }
     }
     Ok(success_messages)
+}
+
+async fn publish(
+    message: String,
+    destinations: Vec<Destinations>,
+    tags: Vec<String>,
+    cfg: Configuration,
+) -> Result<Vec<String>, MusketError> {
+    let mut responses = vec![];
+
+    for target in destinations {
+        match target {
+            Destinations::All => {
+                responses.push(bluesky::execute(&cfg, &message, &tags).await?);
+                responses.push(linkedin::execute(&cfg, &message, &tags).await?);
+                responses.push(turso::execute(&cfg, &message, &tags).await?);
+            }
+            Destinations::Bluesky => {
+                responses.push(bluesky::execute(&cfg, &message, &tags).await?);
+            }
+            Destinations::LinkedIn => {
+                responses.push(linkedin::execute(&cfg, &message, &tags).await?);
+            }
+            Destinations::Turso => {
+                responses.push(turso::execute(&cfg, &message, &tags).await?);
+            }
+        }
+    }
+
+    Ok(responses)
 }
