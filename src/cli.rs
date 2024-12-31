@@ -1,4 +1,8 @@
+use std::str::FromStr;
+
 use clap::{Parser, Subcommand};
+
+use crate::MusketError;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -25,6 +29,8 @@ pub enum Command {
         #[arg(short, long, value_delimiter = ',')]
         tags: Option<Vec<String>>,
     },
+    /// Use the Load command to prepare what to send where before firing.
+    Load,
 }
 
 /// Enum with all the enabled destinations
@@ -34,4 +40,19 @@ pub enum Destinations {
     Bluesky,
     LinkedIn,
     Turso,
+}
+
+impl FromStr for Destinations {
+    type Err = MusketError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Bluesky" => Ok(Destinations::Bluesky),
+            "LinkedIn" => Ok(Destinations::LinkedIn),
+            "Turso" => Ok(Destinations::Turso),
+            _ => Err(MusketError::Cli {
+                message: format!("Unknown destination {}", s),
+            }),
+        }
+    }
 }
