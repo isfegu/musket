@@ -4,7 +4,7 @@ use bsky_sdk::{api::types::string::Datetime, api::xrpc, rich_text::RichText, Bsk
 pub struct Bluesky {
     pub identifier: String,
     pub password: String,
-    pub share_commentary: String,
+    pub commentary: String,
 }
 
 impl From<bsky_sdk::Error> for DestinationError {
@@ -32,7 +32,7 @@ impl Destination for Bluesky {
             .login(self.identifier.as_str(), self.password.as_str())
             .await?;
 
-        let mut rich_text_content = format!("{} {}", self.share_commentary, url);
+        let mut rich_text_content = format!("{} {}", self.commentary, url);
 
         if !tags.is_empty() {
             let tags_joined = tags.join(", #");
