@@ -6,9 +6,14 @@ mod errors;
 
 use clap::Parser;
 use cli::{Cli, Command, Destinations};
-use commands::*;
-use errors::*;
+use commands::{bluesky, linkedin, turso};
+use errors::MusketError;
 
+/// Runs the main logic of the application.
+///
+/// # Errors
+///
+/// This function will return an error if any of the commands fail.
 pub async fn run() -> Result<Vec<String>, MusketError> {
     let mut success_messages: Vec<String> = vec![];
     let cli = Cli::parse();
@@ -30,7 +35,7 @@ pub async fn run() -> Result<Vec<String>, MusketError> {
         } => {
             if destination.is_none() {
                 return Err(MusketError::Cli {
-                    message: format!("The url \"{}\" cannot be sent to a non-existing destination. Set, at least, one valid destination.", url),
+                    message: format!("The url \"{url}\" cannot be sent to a non-existing destination. Set, at least, one valid destination."),
                 });
             }
 

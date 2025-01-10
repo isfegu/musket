@@ -1,7 +1,7 @@
 use crate::{
     config,
     destinations::{bluesky::Bluesky, Destination},
-    errors::*,
+    errors::MusketError,
 };
 
 pub async fn execute(
@@ -15,5 +15,5 @@ pub async fn execute(
         share_commentary: cfg.bluesky.share_commentary.to_string(),
     };
     bluesky.fire(url, vector_of_tags).await?;
-    Ok(format!("The url \"{}\" has been sent to Bluesky.", url))
+    Ok(format!("The url \"{url}\" has been sent to Bluesky."))
 }

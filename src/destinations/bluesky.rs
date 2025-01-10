@@ -10,7 +10,7 @@ pub struct Bluesky {
 impl From<bsky_sdk::Error> for DestinationError {
     fn from(e: bsky_sdk::Error) -> Self {
         DestinationError::LinkedIn {
-            message: format!("The url cannot be sent to Bluesky due to {}.", e),
+            message: format!("The url cannot be sent to Bluesky due to {e}."),
         }
     }
 }
@@ -20,7 +20,7 @@ impl From<xrpc::Error<bsky_sdk::api::com::atproto::server::create_session::Error
 {
     fn from(e: xrpc::Error<bsky_sdk::api::com::atproto::server::create_session::Error>) -> Self {
         DestinationError::LinkedIn {
-            message: format!("The url cannot be sent to Bluesky due to {}.", e),
+            message: format!("The url cannot be sent to Bluesky due to {e}."),
         }
     }
 }

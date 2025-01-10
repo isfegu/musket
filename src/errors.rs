@@ -11,11 +11,9 @@ impl std::error::Error for MusketError {}
 
 impl std::fmt::Display for MusketError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        use MusketError::*;
+        use MusketError::{Cli, Configuration, Destination};
         let output = match self {
-            Destination { message: m } => m,
-            Configuration { message: m } => m,
-            Cli { message: m } => m,
+            Configuration { message: m } | Cli { message: m } | Destination { message: m } => m,
         };
         write!(f, "{output}")
     }
@@ -24,7 +22,7 @@ impl std::fmt::Display for MusketError {
 impl From<ConfigurationError> for MusketError {
     fn from(e: ConfigurationError) -> Self {
         MusketError::Configuration {
-            message: format!("{}.", e),
+            message: format!("{e}."),
         }
     }
 }
@@ -32,7 +30,7 @@ impl From<ConfigurationError> for MusketError {
 impl From<DestinationError> for MusketError {
     fn from(e: DestinationError) -> Self {
         MusketError::Destination {
-            message: format!("{}.", e),
+            message: format!("{e}."),
         }
     }
 }

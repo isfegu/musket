@@ -1,7 +1,7 @@
 use crate::{
     config,
     destinations::{linkedin::LinkedIn, Destination},
-    errors::*,
+    errors::MusketError,
 };
 
 pub async fn execute(
@@ -16,5 +16,5 @@ pub async fn execute(
         visibility: cfg.linkedin.visibility.to_string(),
     };
     linkedin.fire(url, vector_of_tags).await?;
-    Ok(format!("The url \"{}\" has been sent to LinkedIn.", url))
+    Ok(format!("The url \"{url}\" has been sent to LinkedIn."))
 }
