@@ -2,8 +2,7 @@ name: Automatically release binaries
 
 on:
   release:
-    types:
-    - created
+    types: [created]
 
 jobs:
   linux_windows:
