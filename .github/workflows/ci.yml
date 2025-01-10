@@ -10,7 +10,7 @@ env:
 
 jobs:
   check:
-    name: Check a local package and all of its dependencies for errors
+    name: Check if the code is correct
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -18,7 +18,7 @@ jobs:
     - run: cargo check
 
   fmt:
-    name: Run rustfmt in check mode
+    name: Check if the code is formatted correctly
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -26,7 +26,7 @@ jobs:
     - run: cargo fmt --check
 
   clippy:
-    name: Checks a package to catch common mistakes and improve the Rust code
+    name: Check if the code is clippy
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
