@@ -3,7 +3,7 @@ name: Automatically release binaries
 on:
   release:
     types:
-    - created
+    - released
 
 jobs:
   linux_windows:
