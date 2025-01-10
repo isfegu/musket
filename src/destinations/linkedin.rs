@@ -4,7 +4,7 @@ use serde_json::json;
 pub struct LinkedIn {
     pub token: String,
     pub author: String,
-    pub share_commentary: String,
+    pub commentary: String,
     pub visibility: String,
 }
 
@@ -18,11 +18,11 @@ impl From<reqwest::Error> for DestinationError {
 
 impl Destination for LinkedIn {
     async fn fire(&self, url: &str, tags: &[String]) -> Result<(), DestinationError> {
-        let mut share_commentary = self.share_commentary.clone();
+        let mut share_commentary = self.commentary.clone();
 
         if !tags.is_empty() {
             let tags_joined = tags.join(", #");
-            share_commentary = format!("{}\n\n#{}", self.share_commentary.clone(), tags_joined);
+            share_commentary = format!("{}\n\n#{}", self.commentary.clone(), tags_joined);
         }
 
         let json = json!({

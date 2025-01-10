@@ -6,14 +6,14 @@ use std::path::PathBuf;
 pub struct BlueskyConfiguration {
     pub identifier: String,
     pub password: String,
-    pub share_commentary: String,
+    pub commentary: String,
 }
 
 #[derive(Default, Debug, Serialize, Deserialize)]
 pub struct LinkedinConfiguration {
     pub token: String,
     pub author: String,
-    pub share_commentary: String,
+    pub commentary: String,
     pub visibility: String,
 }
 
