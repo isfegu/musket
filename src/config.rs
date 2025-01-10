@@ -45,7 +45,7 @@ pub enum ConfigurationError {
 
 impl std::fmt::Display for ConfigurationError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        use ConfigurationError::*;
+        use ConfigurationError::Configuration;
         let output = match self {
             Configuration { message: m } => m,
         };
@@ -56,7 +56,7 @@ impl std::fmt::Display for ConfigurationError {
 impl From<ConfyError> for ConfigurationError {
     fn from(e: ConfyError) -> Self {
         ConfigurationError::Configuration {
-            message: format!("The configuration file cannot be created due to \"{}\".", e),
+            message: format!("The configuration file cannot be created due to \"{e}\"."),
         }
     }
 }

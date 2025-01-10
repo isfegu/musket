@@ -1,7 +1,7 @@
 use crate::{
     config,
     destinations::{turso::Turso, Destination},
-    errors::*,
+    errors::MusketError,
 };
 
 pub async fn execute(
@@ -14,5 +14,5 @@ pub async fn execute(
         token: cfg.turso.token.to_string(),
     };
     turso.fire(url, vector_of_tags).await?;
-    Ok(format!("The url \"{}\" has been sent to Turso.", url))
+    Ok(format!("The url \"{url}\" has been sent to Turso."))
 }

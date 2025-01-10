@@ -11,7 +11,7 @@ pub struct LinkedIn {
 impl From<reqwest::Error> for DestinationError {
     fn from(e: reqwest::Error) -> Self {
         DestinationError::LinkedIn {
-            message: format!("The url cannot be sent to LinkedIn due to {}.", e),
+            message: format!("The url cannot be sent to LinkedIn due to {e}."),
         }
     }
 }

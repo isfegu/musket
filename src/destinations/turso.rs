@@ -10,7 +10,7 @@ pub struct Turso {
 impl From<libsql::Error> for DestinationError {
     fn from(e: libsql::Error) -> Self {
         DestinationError::Turso {
-            message: format!("The url cannot be sent to Turso due to {}.", e),
+            message: format!("The url cannot be sent to Turso due to {e}."),
         }
     }
 }
