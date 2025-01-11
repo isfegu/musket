@@ -6,6 +6,8 @@ __Musket__ is a command line interface to send a URL to several destinations. Ea
 
 ### 1.- Install
 
+For a while, __Musket__ is provided as a cargo package, therefore you need _cargo_ installed in your machine.
+
 ```bash
 cargo install musket
 ```
@@ -38,7 +40,7 @@ Before sending a URL to Bluesky destination you must:
 2. Fill the `bluesky` section in the __Musket__ [configuration file](#2--create-the-configuration-file). You must provide:
    - the `identifier` is the account's username or email.
    - the `password` of the account.
-   - `share_commentary` is the text that will be shown in the post along the link.
+   - `commentary` is the default text that will be shown in the post along the link.
 
 #### LinkedIn
 
@@ -50,7 +52,7 @@ Before sending a URL to LinkedIn destination you must:
 4. Fill the `linkedin` section in the __Musket__ [configuration file](#2--create-the-configuration-file). You must provide:
    - the `token` used as a bearer authentication.
    - the `author` identifier.
-   - `share_commentary` is the text that will be shown in the post along the link.
+   - `commentary` is the default text that will be shown in the post along the link.
    - `visibility`, can be "PUBLIC" or "CONNECTIONS".
 
 #### Turso
@@ -60,6 +62,7 @@ Before sending a URL to Turso destination you must:
 1. [Create a Turso account](https://app.turso.tech).
 2. Create a Turso Database.
 3. Create a Table with the following schema:
+
 ```sql
 CREATE TABLE links (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -73,23 +76,37 @@ CREATE TABLE links (
 
 ### 4.- Sending a URL
 
+To send a URL you have to use the _fire_ command.
+
 ```bash
-$ musket fire --url <URL> --destination <DESTINATION> --tags <tags>
+$ musket fire
+```
+
+The _fire_ command have several options:
+
+- __-u, --url__: To set the URL to send to the destinations. Url is mandatory.
+- __-d, --destination__: To set where the URL will be send. At least, one destination must be specified.
+- __-t, --tags__: To set the tags to be used in the destinations. Tags are optional.
+- __-c, --commentary__: To set the text that will be published along with the URL. Commentary is optional. If no text is specified, then the text set in the [configuration file](#2--create-the-configuration-file) will be used. _Turso_ destination not uses commentaries.
+
+
+```bash
+$ musket fire --url <URL> --destination <DESTINATION> --tags <tags> --commentary <text>
 ```
 
 For example:
 
 ```bash
-$ musket fire --url wikipedia.org --destination bluesky,linked-in,turso --tags one,two,three
+$ musket fire --url wikipedia.org --destination bluesky,linked-in,turso --tags one,two,three --commentary "I've just discover this amazing website!"
 ```
 
 or
 
 ```bash
-$ musket fire --url wikipedia.org -d bluesky -d linked-in -d turso -t one -t two -t three
+$ musket fire --url wikipedia.org -d bluesky -d linked-in -d turso -t one -t two -t three -c "I've just discover this amazing website!"
 ```
 
-Run `musket -h` to get the details of each subcommand and arguments.
+Run `musket -h` to get the details of each command and option.
 
 ## Contributing
 

@@ -8,11 +8,12 @@ pub async fn execute(
     cfg: &config::Configuration,
     url: &str,
     vector_of_tags: &[String],
+    commentary: Option<&String>,
 ) -> Result<String, MusketError> {
     let bluesky = Bluesky {
         identifier: cfg.bluesky.identifier.to_string(),
         password: cfg.bluesky.password.to_string(),
-        commentary: cfg.bluesky.commentary.to_string(),
+        commentary: commentary.unwrap_or(&cfg.bluesky.commentary).to_string(),
     };
     bluesky.fire(url, vector_of_tags).await?;
     Ok(format!("The url \"{url}\" has been sent to Bluesky."))
