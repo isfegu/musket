@@ -13,17 +13,21 @@ pub enum Command {
     Init,
     /// Use the Fire command to send a URL to one or more destinations. A list of tags can be specified.
     Fire {
-        /// URL to send to the destinations
+        /// The URL to send to the destinations. The URL is mandatory.
         #[arg(short, long)]
         url: String,
 
-        /// Place to send (publish, save, etc.) the URL. At least, one destination must be choosed.
+        /// The place to send (publish, save, etc.) the URL. At least, one destination must be choosed.
         #[arg(short, long, value_delimiter = ',')]
         destination: Option<Vec<Destinations>>,
 
-        /// The tags to be used in the destinations.
+        /// The tags to be used in the destinations. The tags are optional.
         #[arg(short, long, value_delimiter = ',')]
         tags: Option<Vec<String>>,
+
+        /// The comment to publish along with the URL (if destination allows it). The comment is optional.
+        #[arg(short, long)]
+        commentary: Option<String>,
     },
 }
 
