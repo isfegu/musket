@@ -30,6 +30,11 @@ pub struct Configuration {
     pub turso: TursoConfiguration,
 }
 
+pub fn configuration_exists() -> Result<bool, ConfigurationError> {
+    let configuration_path = confy::get_configuration_file_path("musket", "config")?;
+    Ok(configuration_path.exists())
+}
+
 pub fn configure() -> Result<Configuration, ConfigurationError> {
     Ok(confy::load("musket", "config")?)
 }

@@ -19,15 +19,25 @@ pub async fn run() -> Result<Vec<String>, MusketError> {
     let cli = Cli::parse();
 
     match cli.cmd {
-        Command::Init => match config::configure() {
-            Ok(_) => {
-                success_messages.push(format!("The configuration file has been created here: \"{}\". \nTo start using Musket, please fill in the configuration file with your data.",
-                config::get_configuration_path()
-                    .unwrap_or_default()
-                    .to_string_lossy()));
+        Command::Init { force } => {
+            let overwrite = force.unwrap_or(false);
+
+            if config::configuration_exists()? && !overwrite {
+                return Err(MusketError::Cli {
+                    message: "The configuration file already exists. If you want to overwrite it, please run musket init command with the -f, --force option.".to_string(),
+                });
             }
-            Err(e) => return Err(e.into()),
-        },
+
+            match config::configure() {
+                Ok(_) => {
+                    success_messages.push(format!("The configuration file has been created here: \"{}\". \nTo start using Musket, please fill in the configuration file with your data.",
+                    config::get_configuration_path()
+                        .unwrap_or_default()
+                        .to_string_lossy()));
+                }
+                Err(e) => return Err(e.into()),
+            }
+        }
         Command::Fire {
             url,
             destination,
