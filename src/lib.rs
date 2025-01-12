@@ -1,19 +1,23 @@
 mod cli;
-mod commands;
 mod config;
 mod destinations;
 mod errors;
+mod shooters;
 
 use clap::Parser;
 use cli::{Cli, Command, Destinations};
-use commands::{bluesky, linkedin, mastodon, turso};
 use errors::MusketError;
+use shooters::{
+    bluesky::BlueskyShooter, linkedin::LinkedInShooter, mastodon::MastodonShooter,
+    turso::TursoShooter, Shooter,
+};
 
 /// Runs the main logic of the application.
 ///
 /// # Errors
 ///
 /// This function will return an error if any of the commands fail.
+#[allow(clippy::too_many_lines)]
 pub async fn run() -> Result<Vec<String>, MusketError> {
     let mut success_messages: Vec<String> = vec![];
     let cli = Cli::parse();
@@ -51,47 +55,68 @@ pub async fn run() -> Result<Vec<String>, MusketError> {
             }
 
             let cfg = config::configure()?;
-
             let vector_of_tags = tags.unwrap_or_default();
             let destinations = destination.unwrap_or_default();
 
             for target in destinations {
                 match target {
                     Destinations::All => {
+                        let bluesky_shooter = BlueskyShooter;
                         success_messages.push(
-                            bluesky::execute(&cfg, &url, &vector_of_tags, commentary.as_ref())
+                            bluesky_shooter
+                                .shoot(&cfg, &url, &vector_of_tags, commentary.as_ref())
                                 .await?,
                         );
+                        let mastodon_shooter = MastodonShooter;
                         success_messages.push(
-                            mastodon::execute(&cfg, &url, &vector_of_tags, commentary.as_ref())
+                            mastodon_shooter
+                                .shoot(&cfg, &url, &vector_of_tags, commentary.as_ref())
                                 .await?,
                         );
+                        let linkedin_shooter = LinkedInShooter;
                         success_messages.push(
-                            linkedin::execute(&cfg, &url, &vector_of_tags, commentary.as_ref())
+                            linkedin_shooter
+                                .shoot(&cfg, &url, &vector_of_tags, commentary.as_ref())
                                 .await?,
                         );
-                        success_messages.push(turso::execute(&cfg, &url, &vector_of_tags).await?);
+                        let turso_shooter = TursoShooter;
+                        success_messages.push(
+                            turso_shooter
+                                .shoot(&cfg, &url, &vector_of_tags, None)
+                                .await?,
+                        );
                     }
                     Destinations::Bluesky => {
+                        let bluesky_shooter = BlueskyShooter;
                         success_messages.push(
-                            bluesky::execute(&cfg, &url, &vector_of_tags, commentary.as_ref())
+                            bluesky_shooter
+                                .shoot(&cfg, &url, &vector_of_tags, commentary.as_ref())
                                 .await?,
                         );
                     }
                     Destinations::LinkedIn => {
+                        let linkedin_shooter = LinkedInShooter;
                         success_messages.push(
-                            linkedin::execute(&cfg, &url, &vector_of_tags, commentary.as_ref())
+                            linkedin_shooter
+                                .shoot(&cfg, &url, &vector_of_tags, commentary.as_ref())
                                 .await?,
                         );
                     }
                     Destinations::Mastodon => {
+                        let mastodon_shooter = MastodonShooter;
                         success_messages.push(
-                            mastodon::execute(&cfg, &url, &vector_of_tags, commentary.as_ref())
+                            mastodon_shooter
+                                .shoot(&cfg, &url, &vector_of_tags, commentary.as_ref())
                                 .await?,
                         );
                     }
                     Destinations::Turso => {
-                        success_messages.push(turso::execute(&cfg, &url, &vector_of_tags).await?);
+                        let turso_shooter = TursoShooter;
+                        success_messages.push(
+                            turso_shooter
+                                .shoot(&cfg, &url, &vector_of_tags, None)
+                                .await?,
+                        );
                     }
                 }
             }
