@@ -63,6 +63,10 @@ pub async fn run() -> Result<Vec<String>, MusketError> {
                                 .await?,
                         );
                         success_messages.push(
+                            mastodon::execute(&cfg, &url, &vector_of_tags, commentary.as_ref())
+                                .await?,
+                        );
+                        success_messages.push(
                             linkedin::execute(&cfg, &url, &vector_of_tags, commentary.as_ref())
                                 .await?,
                         );
