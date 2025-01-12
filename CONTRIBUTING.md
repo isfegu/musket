@@ -46,7 +46,7 @@ pub struct Configuration {
 }
 ```
 
-### 2. Create a module
+### 2. Create the destination crate
 
 Create a file with the name of the new destination inside [`destinations`](./src/destinations/) folder. 
 
@@ -60,11 +60,11 @@ Add all the logic needed to send the URL and the tags to the destination through
 
 In the [`errors.rs`](./src/destinations/errors.rs) file, add the new destination as a variant of the enum `DestinationError` and add the new destination in the pattern matching in the `Display` trait implementation of the `DestinationError` .
 
-Back in the module file, implement as many `From` traits for `DestinationError` as the destination needs.
+Back in the crate file, implement as many `From` traits for `DestinationError` as the destination needs.
 
-#### 2.3. Enable the module
+#### 2.3. Enable the crate
 
-Once created, add the new module as a public module in the `destination` module inside the [`mod.rs`](./src/destinations/mod.rs) file.
+Once created, add the new crate as a public module inside the [`mod.rs`](./src/destinations/mod.rs) file.
 
 ```rust
 pub mod bluesky;
@@ -90,13 +90,17 @@ pub enum Destinations {
 
 > Info: Add the modules in alphabetical order.
 
-### 4. Create a Command
+### 4. Create a Shooter
 
-Create a file with the name of the new destination inside [`commands`](./src/commands/) folder. 
+Create a file with the name of the new destination inside [`shooters`](./src/commands/) folder. 
 
-This file must implement a function named `execute` in charge of perform the sending of the URL (and tags if needed) to the destination.
+Add a public unit `struct` with the name of the destination plus de `Shooter` word, for example, `MastodonShooter`.
 
-Once created, add the new module as a public module in the `commands` module inside the [`mod.rs`](./src/commands/mod.rs) file.
+Implement the `Destination` trait for the struct that we have just created. Add to the `shoot` method all the logic needed to create a destination instance and call the `fire` method.
+
+> The Shooter is a way to reduce the lines of code of the ['lib.rs`](./src/lib.rs) file.
+
+Once created, add the new crate as a public module in the [`mod.rs`](./src/shooters/mod.rs) file.
 
 ```rust
 pub mod bluesky;
@@ -127,7 +131,6 @@ Destinations::Bluesky => {
             .await?,
     );
 }
-...
 ```
 
 > Info: Add the destinations in alphabetical order.
