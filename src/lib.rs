@@ -6,7 +6,7 @@ mod errors;
 
 use clap::Parser;
 use cli::{Cli, Command, Destinations};
-use commands::{bluesky, linkedin, turso};
+use commands::{bluesky, linkedin, mastodon, turso};
 use errors::MusketError;
 
 /// Runs the main logic of the application.
@@ -77,6 +77,12 @@ pub async fn run() -> Result<Vec<String>, MusketError> {
                     Destinations::LinkedIn => {
                         success_messages.push(
                             linkedin::execute(&cfg, &url, &vector_of_tags, commentary.as_ref())
+                                .await?,
+                        );
+                    }
+                    Destinations::Mastodon => {
+                        success_messages.push(
+                            mastodon::execute(&cfg, &url, &vector_of_tags, commentary.as_ref())
                                 .await?,
                         );
                     }

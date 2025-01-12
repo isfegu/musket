@@ -1,6 +1,6 @@
 # Musket
 
-__Musket__ is a command line interface to send a URL to several destinations. Each destination handle the URL depending the nature of the destination, for example, Bluesky destination post the URL in the user's feed, LinkedIn destination publish the link in the user profile and Turso destination stores the URL in Turso Service (a SQLite database SaaS).
+__Musket__ is a command line interface to send a URL to several destinations. Each destination handle the URL depending the nature of the destination, for example, Bluesky, Mastodon and LinkedIn destinations post the URL in the user's feed whereas Turso destination stores the URL in Turso Service (a SQLite database SaaS).
 
 ## Usage
 
@@ -40,6 +40,17 @@ Before sending a URL to Bluesky destination you must:
 2. Fill the `bluesky` section in the __Musket__ [configuration file](#2--create-the-configuration-file). You must provide:
    - the `identifier` is the account's username or email.
    - the `password` of the account.
+   - `commentary` is the default text that will be shown in the post along the link.
+
+#### Mastodon
+
+Before sending a URL to Mastodon destination you must:
+
+1. Create a [Mastodon](https://docs.joinmastodon.org/) account.
+2. Create a [Mastodon Application](https://www.linkedin.com/developers) with the _Write_ and _Profile_ scopes added. Once the Application has been created an access token will be generated. 
+3. Fill the `mastodon` section in the __Musket__ [configuration file](#2--create-the-configuration-file). You must provide:
+   - the `server` is the URL of your Mastodon account provider, for example: https://mastodon.online.
+   - the `token` used as a authentication.
    - `commentary` is the default text that will be shown in the post along the link.
 
 #### LinkedIn
@@ -112,13 +123,13 @@ $ musket fire --url <URL> --destination <DESTINATION> --tags <tags> --commentary
 For example:
 
 ```bash
-$ musket fire --url wikipedia.org --destination bluesky,linked-in,turso --tags one,two,three --commentary "I've just discover this amazing website!"
+$ musket fire --url wikipedia.org --destination bluesky,mastodon,linked-in,turso --tags one,two,three --commentary "I've just discover this amazing website!"
 ```
 
 or
 
 ```bash
-$ musket fire --url wikipedia.org -d bluesky -d linked-in -d turso -t one -t two -t three -c "I've just discover this amazing website!"
+$ musket fire --url wikipedia.org -d bluesky -d mastodon -d linked-in -d turso -t one -t two -t three -c "I've just discover this amazing website!"
 ```
 
 ## Contributing
