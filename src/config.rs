@@ -18,6 +18,13 @@ pub struct LinkedinConfiguration {
 }
 
 #[derive(Default, Debug, Serialize, Deserialize)]
+pub struct MastodonConfiguration {
+    pub server: String,
+    pub token: String,
+    pub commentary: String,
+}
+
+#[derive(Default, Debug, Serialize, Deserialize)]
 pub struct TursoConfiguration {
     pub url: String,
     pub token: String,
@@ -27,6 +34,7 @@ pub struct TursoConfiguration {
 pub struct Configuration {
     pub bluesky: BlueskyConfiguration,
     pub linkedin: LinkedinConfiguration,
+    pub mastodon: MastodonConfiguration,
     pub turso: TursoConfiguration,
 }
 

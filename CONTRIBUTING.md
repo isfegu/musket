@@ -41,6 +41,7 @@ pub struct Configuration {
     pub bluesky: BlueskyConfiguration,
     pub linkedin: LinkedinConfiguration,
     pub turso: TursoConfiguration,
+    pub mastodon: MastodonConfiguration,
     // Add the new destination configuration
 }
 ```
@@ -53,23 +54,22 @@ Create a file with the name of the new destination inside [`destinations`](./src
 
 Add a public `struct` with the fields needed to configure the destination. This fields must be `pub`.
 
-Add all the login needed to send the URL, and the tags, to the destination in the `Destination` trait implementation.
+Add all the logic needed to send the URL and the tags to the destination through the `Destination` trait implementation.
 
 #### 2.2. Handle the errors
 
 In the [`errors.rs`](./src/destinations/errors.rs) file, add the new destination as a variant of the enum `DestinationError` and add the new destination in the pattern matching in the `Display` trait implementation of the `DestinationError` .
 
-Back in the module file, implement the `From` trait for `DestinationError`.
+Back in the module file, implement as many `From` traits for `DestinationError` as the destination needs.
 
 #### 2.3. Enable the module
 
 Once created, add the new module as a public module in the `destination` module inside the [`mod.rs`](./src/destinations/mod.rs) file.
 
-For example:
-
 ```rust
 pub mod bluesky;
 pub mod linkedin;
+pub mod mastodon;
 pub mod turso;
 ```
 > Info: Add the modules in alphabetical order.
@@ -98,35 +98,36 @@ This file must implement a function named `execute` in charge of perform the sen
 
 Once created, add the new module as a public module in the `commands` module inside the [`mod.rs`](./src/commands/mod.rs) file.
 
-For example:
-
 ```rust
 pub mod bluesky;
 pub mod linkedin;
+pub mod mastodon;
 pub mod turso;
 ```
 
 ### 5. Manage new destination from the lib
 
-In the ['lib.rs`](./src/lib.rs) file, add the new destination as a pattern matching of the `Fire` command, and add a call to the command created above. Remember to add the command to the `Destinations::All` match.
-
-For example:
+In the ['lib.rs`](./src/lib.rs) file, add the new command in the use directive, `use commands::{bluesky, linkedin, mastodon, turso};`, add the new destination as a pattern matching of the `Fire` command, and add a call to the command created above. Remember to add the command to the `Destinations::All` match as well.
 
 ```rust
 Destinations::All => {
-    bluesky::execute(&cfg, &url, &vector_of_tags).await?;
-    linkedin::execute(&cfg, &url, &vector_of_tags).await?;
-    turso::execute(&cfg, &url, &vector_of_tags).await?;
+    success_messages.push(
+        bluesky::execute(&cfg, &url, &vector_of_tags, commentary.as_ref())
+            .await?,
+    );
+    success_messages.push(
+        linkedin::execute(&cfg, &url, &vector_of_tags, commentary.as_ref())
+            .await?,
+    );
+    success_messages.push(turso::execute(&cfg, &url, &vector_of_tags).await?);
 }
 Destinations::Bluesky => {
-    bluesky::execute(&cfg, &url, &vector_of_tags).await?;
+    success_messages.push(
+        bluesky::execute(&cfg, &url, &vector_of_tags, commentary.as_ref())
+            .await?,
+    );
 }
-Destinations::LinkedIn => {
-    linkedin::execute(&cfg, &url, &vector_of_tags).await?;
-}
-Destinations::Turso => {
-    turso::execute(&cfg, &url, &vector_of_tags).await?;
-}
+...
 ```
 
 > Info: Add the destinations in alphabetical order.

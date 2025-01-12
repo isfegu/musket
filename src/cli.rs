@@ -47,5 +47,6 @@ pub enum Destinations {
     All,
     Bluesky,
     LinkedIn,
+    Mastodon,
     Turso,
 }
