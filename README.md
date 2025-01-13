@@ -86,7 +86,7 @@ CREATE TABLE links (
 );
 ```
 4. Fill the `turso` section in the __Musket__ [configuration file](#2--create-the-configuration-file). You must provide:
-   - the `url` of the database where store the data.
+   - the url of the `database` where store the data.
    - the `token` used as a authentication.
    - `enabled` to set whether the destination can be selected.
 

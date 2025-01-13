@@ -25,9 +25,11 @@ For example:
 
 ```rust
 #[derive(Default, Debug, Serialize, Deserialize)]
-pub struct TursoConfiguration {
-    pub url: String,
-    pub token: String,
+pub struct BlueskyConfiguration {
+    pub identifier: String,
+    pub password: String,
+    pub commentary: String,
+    pub enabled: bool,
 }
 ```
 
@@ -54,7 +56,7 @@ Create a file with the name of the new destination inside [`destinations`](./src
 
 Add a public `struct` with the fields needed to configure the destination. This fields must be `pub`.
 
-Add all the logic needed to send the URL and the tags to the destination through the `Destination` trait implementation.
+Add all the logic needed to send the URL and the tags to the destination in the `fire` method through the `Destination` trait implementation.
 
 #### 2.2. Handle the errors
 
@@ -83,6 +85,7 @@ pub enum Destinations {
     All,
     Bluesky,
     LinkedIn,
+    Mastodon,
     Turso,
     // Add here the new destination
 }
@@ -115,19 +118,36 @@ In the ['lib.rs`](./src/lib.rs) file, add the new command in the use directive, 
 
 ```rust
 Destinations::All => {
+    let bluesky_shooter = BlueskyShooter;
     success_messages.push(
-        bluesky::execute(&cfg, &url, &vector_of_tags, commentary.as_ref())
+        bluesky_shooter
+            .shoot(&cfg, &url, vector_of_tags.clone(), commentary.as_ref())
             .await?,
     );
+    let mastodon_shooter = MastodonShooter;
     success_messages.push(
-        linkedin::execute(&cfg, &url, &vector_of_tags, commentary.as_ref())
+        mastodon_shooter
+            .shoot(&cfg, &url, vector_of_tags.clone(), commentary.as_ref())
             .await?,
     );
-    success_messages.push(turso::execute(&cfg, &url, &vector_of_tags).await?);
+    let linkedin_shooter = LinkedInShooter;
+    success_messages.push(
+        linkedin_shooter
+            .shoot(&cfg, &url, vector_of_tags.clone(), commentary.as_ref())
+            .await?,
+    );
+    let turso_shooter = TursoShooter;
+    success_messages.push(
+        turso_shooter
+            .shoot(&cfg, &url, vector_of_tags.clone(), None)
+            .await?,
+    );
 }
 Destinations::Bluesky => {
+    let bluesky_shooter = BlueskyShooter;
     success_messages.push(
-        bluesky::execute(&cfg, &url, &vector_of_tags, commentary.as_ref())
+        bluesky_shooter
+            .shoot(&cfg, &url, vector_of_tags.clone(), commentary.as_ref())
             .await?,
     );
 }

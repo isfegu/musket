@@ -10,7 +10,7 @@ pub trait Shooter {
         &self,
         cfg: &config::Configuration,
         url: &str,
-        vector_of_tags: &[String],
+        vector_of_tags: Vec<String>,
         commentary: Option<&String>,
     ) -> Result<String, crate::errors::MusketError>;
 }

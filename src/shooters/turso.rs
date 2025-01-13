@@ -12,7 +12,7 @@ impl Shooter for TursoShooter {
         &self,
         cfg: &config::Configuration,
         url: &str,
-        vector_of_tags: &[String],
+        tags: Vec<String>,
         _commentary: Option<&String>,
     ) -> Result<String, MusketError> {
         if !cfg.turso.enabled {
@@ -22,10 +22,13 @@ impl Shooter for TursoShooter {
         }
 
         let turso = Turso {
-            url: cfg.turso.url.to_string(),
+            database: cfg.turso.database.to_string(),
             token: cfg.turso.token.to_string(),
+            url: url.to_string(),
+            tags,
         };
-        turso.fire(url, vector_of_tags).await?;
+        turso.fire().await?;
+
         Ok(format!("The url \"{url}\" has been sent to Turso."))
     }
 }

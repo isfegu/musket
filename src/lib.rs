@@ -64,25 +64,25 @@ pub async fn run() -> Result<Vec<String>, MusketError> {
                         let bluesky_shooter = BlueskyShooter;
                         success_messages.push(
                             bluesky_shooter
-                                .shoot(&cfg, &url, &vector_of_tags, commentary.as_ref())
+                                .shoot(&cfg, &url, vector_of_tags.clone(), commentary.as_ref())
                                 .await?,
                         );
                         let mastodon_shooter = MastodonShooter;
                         success_messages.push(
                             mastodon_shooter
-                                .shoot(&cfg, &url, &vector_of_tags, commentary.as_ref())
+                                .shoot(&cfg, &url, vector_of_tags.clone(), commentary.as_ref())
                                 .await?,
                         );
                         let linkedin_shooter = LinkedInShooter;
                         success_messages.push(
                             linkedin_shooter
-                                .shoot(&cfg, &url, &vector_of_tags, commentary.as_ref())
+                                .shoot(&cfg, &url, vector_of_tags.clone(), commentary.as_ref())
                                 .await?,
                         );
                         let turso_shooter = TursoShooter;
                         success_messages.push(
                             turso_shooter
-                                .shoot(&cfg, &url, &vector_of_tags, None)
+                                .shoot(&cfg, &url, vector_of_tags.clone(), None)
                                 .await?,
                         );
                     }
@@ -90,7 +90,7 @@ pub async fn run() -> Result<Vec<String>, MusketError> {
                         let bluesky_shooter = BlueskyShooter;
                         success_messages.push(
                             bluesky_shooter
-                                .shoot(&cfg, &url, &vector_of_tags, commentary.as_ref())
+                                .shoot(&cfg, &url, vector_of_tags.clone(), commentary.as_ref())
                                 .await?,
                         );
                     }
@@ -98,7 +98,7 @@ pub async fn run() -> Result<Vec<String>, MusketError> {
                         let linkedin_shooter = LinkedInShooter;
                         success_messages.push(
                             linkedin_shooter
-                                .shoot(&cfg, &url, &vector_of_tags, commentary.as_ref())
+                                .shoot(&cfg, &url, vector_of_tags.clone(), commentary.as_ref())
                                 .await?,
                         );
                     }
@@ -106,7 +106,7 @@ pub async fn run() -> Result<Vec<String>, MusketError> {
                         let mastodon_shooter = MastodonShooter;
                         success_messages.push(
                             mastodon_shooter
-                                .shoot(&cfg, &url, &vector_of_tags, commentary.as_ref())
+                                .shoot(&cfg, &url, vector_of_tags.clone(), commentary.as_ref())
                                 .await?,
                         );
                     }
@@ -114,7 +114,7 @@ pub async fn run() -> Result<Vec<String>, MusketError> {
                         let turso_shooter = TursoShooter;
                         success_messages.push(
                             turso_shooter
-                                .shoot(&cfg, &url, &vector_of_tags, None)
+                                .shoot(&cfg, &url, vector_of_tags.clone(), None)
                                 .await?,
                         );
                     }

@@ -29,7 +29,7 @@ pub struct MastodonConfiguration {
 
 #[derive(Default, Debug, Serialize, Deserialize)]
 pub struct TursoConfiguration {
-    pub url: String,
+    pub database: String,
     pub token: String,
     pub enabled: bool,
 }
