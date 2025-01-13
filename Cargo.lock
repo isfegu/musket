@@ -1670,9 +1670,9 @@ checksum = "0e7465ac9959cc2b1404e8e2367b43684a6d13790fe23056cc8c6c5a6b7bcb94"
 
 [[package]]
 name = "megalodon"
-version = "0.15.2"
+version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "72e612a42d4f5818e5cce5be6e121f9b4b009c8ebe23f57c42814231797c9a59"
+checksum = "6053001f2fd3082f7c6007225fef9cf6c0bbea96d8fc82976fb0dcfda3bcbf30"
 dependencies = [
  "async-trait",
  "chrono",
@@ -1685,7 +1685,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sha1",
- "thiserror 1.0.69",
+ "thiserror 2.0.11",
  "tokio",
  "tokio-tungstenite",
  "tokio-util",
@@ -1767,7 +1767,7 @@ dependencies = [
 
 [[package]]
 name = "musket"
-version = "0.20.1"
+version = "0.20.2"
 dependencies = [
  "bsky-sdk",
  "chrono",
