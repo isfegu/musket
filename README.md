@@ -30,7 +30,7 @@ __Musket__ uses a configuration file named `config.toml`. This file is placed in
 
 ### 3.- Configure the destinations
 
-All destinations have to be configured from the [configuration file](#2--create-the-configuration-file).
+All destinations have to be configured from the [configuration file](#2--create-the-configuration-file). The configuration is a .toml file, therefore, strings must be in quotes and booleans must be the word _true_ or _false_.
 
 #### Bluesky
 
@@ -41,6 +41,7 @@ Before sending a URL to Bluesky destination you must:
    - the `identifier` is the account's username or email.
    - the `password` of the account.
    - `commentary` is the default text that will be shown in the post along the link.
+   - `enabled` to set whether the destination can be selected.
 
 #### Mastodon
 
@@ -52,6 +53,7 @@ Before sending a URL to Mastodon destination you must:
    - the `server` is the URL of your Mastodon account provider, for example: https://mastodon.online.
    - the `token` used as a authentication.
    - `commentary` is the default text that will be shown in the post along the link.
+   - `enabled` to set whether the destination can be selected.
 
 #### LinkedIn
 
@@ -65,6 +67,7 @@ Before sending a URL to LinkedIn destination you must:
    - the `author` identifier.
    - `commentary` is the default text that will be shown in the post along the link.
    - `visibility`, can be "PUBLIC" or "CONNECTIONS".
+   - `enabled` to set whether the destination can be selected.
 
 #### Turso
 
@@ -82,7 +85,10 @@ CREATE TABLE links (
   created DATETIME
 );
 ```
-4. Fill the `turso` section in the __Musket__ [configuration file](#2--create-the-configuration-file). You must provide the database `url` and the turso `token`.
+4. Fill the `turso` section in the __Musket__ [configuration file](#2--create-the-configuration-file). You must provide:
+   - the `url` of the database where store the data.
+   - the `token` used as a authentication.
+   - `enabled` to set whether the destination can be selected.
 
 
 ### 4.- Using de CLI

@@ -15,6 +15,12 @@ impl Shooter for MastodonShooter {
         vector_of_tags: &[String],
         commentary: Option<&String>,
     ) -> Result<String, MusketError> {
+        if !cfg.mastodon.enabled {
+            return Ok(format!(
+                "The url \"{url}\" cannot be sent to Mastodon because this destination is disabled."
+            ));
+        }
+
         let mastodon = Mastodon {
             server: cfg.mastodon.server.to_string(),
             token: cfg.mastodon.token.to_string(),

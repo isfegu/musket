@@ -15,6 +15,12 @@ impl Shooter for TursoShooter {
         vector_of_tags: &[String],
         _commentary: Option<&String>,
     ) -> Result<String, MusketError> {
+        if !cfg.turso.enabled {
+            return Ok(format!(
+                "The url \"{url}\" cannot be sent to Turso because this destination is disabled."
+            ));
+        }
+
         let turso = Turso {
             url: cfg.turso.url.to_string(),
             token: cfg.turso.token.to_string(),
