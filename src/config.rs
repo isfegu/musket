@@ -7,6 +7,7 @@ pub struct BlueskyConfiguration {
     pub identifier: String,
     pub password: String,
     pub commentary: String,
+    pub enabled: bool,
 }
 
 #[derive(Default, Debug, Serialize, Deserialize)]
@@ -15,6 +16,7 @@ pub struct LinkedinConfiguration {
     pub author: String,
     pub commentary: String,
     pub visibility: String,
+    pub enabled: bool,
 }
 
 #[derive(Default, Debug, Serialize, Deserialize)]
@@ -22,12 +24,14 @@ pub struct MastodonConfiguration {
     pub server: String,
     pub token: String,
     pub commentary: String,
+    pub enabled: bool,
 }
 
 #[derive(Default, Debug, Serialize, Deserialize)]
 pub struct TursoConfiguration {
     pub url: String,
     pub token: String,
+    pub enabled: bool,
 }
 
 #[derive(Default, Debug, Serialize, Deserialize)]
@@ -69,7 +73,7 @@ impl std::fmt::Display for ConfigurationError {
 impl From<ConfyError> for ConfigurationError {
     fn from(e: ConfyError) -> Self {
         ConfigurationError::Configuration {
-            message: format!("The configuration file cannot be created due to \"{e}\"."),
+            message: format!("The configuration file cannot be used due to \"{e}\"."),
         }
     }
 }

@@ -1767,7 +1767,7 @@ dependencies = [
 
 [[package]]
 name = "musket"
-version = "0.19.2"
+version = "0.20.0"
 dependencies = [
  "bsky-sdk",
  "chrono",

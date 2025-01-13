@@ -15,6 +15,12 @@ impl Shooter for LinkedInShooter {
         vector_of_tags: &[String],
         commentary: Option<&String>,
     ) -> Result<String, MusketError> {
+        if !cfg.linkedin.enabled {
+            return Ok(format!(
+                "The url \"{url}\" cannot be sent to LinkedIn because this destination is disabled."
+            ));
+        }
+
         let linkedin = LinkedIn {
             token: cfg.linkedin.token.to_string(),
             author: cfg.linkedin.author.to_string(),

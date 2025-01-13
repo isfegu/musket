@@ -1,6 +1,6 @@
 [package]
 name = "musket"
-version = "0.19.2"
+version = "0.20.0"
 edition = "2021"
 repository = "https://github.com/isfegu/musket"
 description = "Musket is a command line interface to send a URL to several destinations."
@@ -8,7 +8,7 @@ license = "MIT"
 authors = ["isfegu"]
 readme = "README.md"
 homepage = "https://github.com/isfegu/musket"
-keywords = ["cli", "turso", "linkedin", "bluesky"]
+keywords = ["cli", "bluesky", "mastodon", "linkedin", "turso"]
 categories = ["command-line-utilities"]
 
 [[bin]]
