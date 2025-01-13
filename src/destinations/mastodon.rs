@@ -4,6 +4,8 @@ use megalodon::{entities::StatusVisibility, generator, megalodon::PostStatusInpu
 pub struct Mastodon {
     pub server: String,
     pub token: String,
+    pub url: String,
+    pub tags: Vec<String>,
     pub commentary: String,
 }
 
@@ -16,7 +18,7 @@ impl From<megalodon::error::Error> for DestinationError {
 }
 
 impl Destination for Mastodon {
-    async fn fire(&self, url: &str, tags: &[String]) -> Result<(), DestinationError> {
+    async fn fire(&self) -> Result<(), DestinationError> {
         match generator(
             megalodon::SNS::Mastodon,
             self.server.clone(),
@@ -29,10 +31,10 @@ impl Destination for Mastodon {
                 });
             }
             Ok(mastodon_client) => {
-                let mut status_content = format!("{}\n{}", self.commentary, url);
+                let mut status_content = format!("{}\n{}", self.commentary, self.url);
 
-                if !tags.is_empty() {
-                    let tags_joined = tags.join(", #");
+                if !self.tags.is_empty() {
+                    let tags_joined = self.tags.join(", #");
                     status_content = format!("{}\n#{}", status_content, &tags_joined);
                 }
 

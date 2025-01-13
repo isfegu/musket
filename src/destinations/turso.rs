@@ -3,8 +3,10 @@ use chrono::prelude::*;
 use libsql::Builder;
 
 pub struct Turso {
-    pub url: String,
+    pub database: String,
     pub token: String,
+    pub url: String,
+    pub tags: Vec<String>,
 }
 
 impl From<libsql::Error> for DestinationError {
@@ -16,11 +18,11 @@ impl From<libsql::Error> for DestinationError {
 }
 
 impl Destination for Turso {
-    async fn fire(&self, url: &str, tags: &[String]) -> Result<(), DestinationError> {
+    async fn fire(&self) -> Result<(), DestinationError> {
         let local: DateTime<Local> = Local::now();
         let created = format!("{}", local.format("%Y-%m-%d %H:%M:%S"));
 
-        let turso_db_url = self.url.clone();
+        let turso_db_url = self.database.clone();
         let turso_db_token = self.token.clone();
 
         let db = Builder::new_remote(turso_db_url, turso_db_token)
@@ -31,7 +33,7 @@ impl Destination for Turso {
 
         conn.execute(
             "INSERT INTO links (url, tags, created) VALUES (:url, :tags, :created)",
-            libsql::named_params! { ":url": url, ":tags": tags.join(", "), ":created": created },
+            libsql::named_params! { ":url": self.url.clone(), ":tags": self.tags.join(", "), ":created": created },
         )
         .await?;
 

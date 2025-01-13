@@ -4,6 +4,8 @@ use bsky_sdk::{api::types::string::Datetime, api::xrpc, rich_text::RichText, Bsk
 pub struct Bluesky {
     pub identifier: String,
     pub password: String,
+    pub url: String,
+    pub tags: Vec<String>,
     pub commentary: String,
 }
 
@@ -26,16 +28,16 @@ impl From<xrpc::Error<bsky_sdk::api::com::atproto::server::create_session::Error
 }
 
 impl Destination for Bluesky {
-    async fn fire(&self, url: &str, tags: &[String]) -> Result<(), DestinationError> {
+    async fn fire(&self) -> Result<(), DestinationError> {
         let agent = BskyAgent::builder().build().await?;
         agent
             .login(self.identifier.as_str(), self.password.as_str())
             .await?;
 
-        let mut rich_text_content = format!("{} {}", self.commentary, url);
+        let mut rich_text_content = format!("{} {}", self.commentary, self.url);
 
-        if !tags.is_empty() {
-            let tags_joined = tags.join(", #");
+        if !self.tags.is_empty() {
+            let tags_joined = self.tags.join(", #");
             rich_text_content = format!("{}\n#{}", rich_text_content, &tags_joined);
         }
 

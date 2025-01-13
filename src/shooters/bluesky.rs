@@ -12,7 +12,7 @@ impl Shooter for BlueskyShooter {
         &self,
         cfg: &config::Configuration,
         url: &str,
-        vector_of_tags: &[String],
+        tags: Vec<String>,
         commentary: Option<&String>,
     ) -> Result<String, MusketError> {
         if !cfg.bluesky.enabled {
@@ -24,9 +24,13 @@ impl Shooter for BlueskyShooter {
         let bluesky = Bluesky {
             identifier: cfg.bluesky.identifier.to_string(),
             password: cfg.bluesky.password.to_string(),
+            url: url.to_string(),
+            tags,
             commentary: commentary.unwrap_or(&cfg.bluesky.commentary).to_string(),
         };
-        bluesky.fire(url, vector_of_tags).await?;
+
+        bluesky.fire().await?;
+
         Ok(format!("The url \"{url}\" has been sent to Bluesky."))
     }
 }
