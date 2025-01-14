@@ -1,10 +1,16 @@
 use super::{Destination, DestinationError};
 use chrono::prelude::*;
 use libsql::Builder;
+use serde::{Deserialize, Serialize};
 
-pub struct Turso {
+#[derive(Clone, Default, Serialize, Deserialize)]
+pub struct TursoConfiguration {
     pub database: String,
     pub token: String,
+    pub enabled: bool,
+}
+pub struct Turso {
+    pub configuration: TursoConfiguration,
     pub url: String,
     pub tags: Vec<String>,
 }
@@ -22,8 +28,8 @@ impl Destination for Turso {
         let local: DateTime<Local> = Local::now();
         let created = format!("{}", local.format("%Y-%m-%d %H:%M:%S"));
 
-        let turso_db_url = self.database.clone();
-        let turso_db_token = self.token.clone();
+        let turso_db_url = self.configuration.database.clone();
+        let turso_db_token = self.configuration.token.clone();
 
         let db = Builder::new_remote(turso_db_url, turso_db_token)
             .build()

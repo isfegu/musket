@@ -6,6 +6,15 @@ pub mod turso;
 
 use errors::DestinationError;
 
+#[derive(Debug, Clone, clap::ValueEnum)]
+pub enum Destinations {
+    All,
+    Bluesky,
+    LinkedIn,
+    Mastodon,
+    Turso,
+}
+
 pub trait Destination {
     async fn fire(&self) -> Result<(), DestinationError>;
 }

@@ -1,5 +1,7 @@
 # Musket
 
+With __Musket__ a “shooter” “fires” a URL at a “target” :D.
+
 __Musket__ is a command line interface to send a URL to several destinations. Each destination handle the URL depending the nature of the destination, for example, Bluesky, Mastodon and LinkedIn destinations post the URL in the user's feed whereas Turso destination stores the URL in Turso Service (a SQLite database SaaS).
 
 ## Usage

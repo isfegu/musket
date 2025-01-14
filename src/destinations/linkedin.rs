@@ -1,13 +1,20 @@
 use super::{Destination, DestinationError};
+use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-pub struct LinkedIn {
+#[derive(Clone, Default, Serialize, Deserialize)]
+pub struct LinkedinConfiguration {
     pub token: String,
     pub author: String,
+    pub commentary: String,
+    pub visibility: String,
+    pub enabled: bool,
+}
+pub struct LinkedIn {
+    pub configuration: LinkedinConfiguration,
     pub url: String,
     pub tags: Vec<String>,
     pub commentary: String,
-    pub visibility: String,
 }
 
 impl From<reqwest::Error> for DestinationError {
@@ -28,7 +35,7 @@ impl Destination for LinkedIn {
         }
 
         let json = json!({
-            "author": self.author.clone(),
+            "author": self.configuration.author.clone(),
             "lifecycleState": "PUBLISHED",
             "specificContent": {
                 "com.linkedin.ugc.ShareContent": {
@@ -45,7 +52,7 @@ impl Destination for LinkedIn {
                 }
             },
             "visibility": {
-                "com.linkedin.ugc.MemberNetworkVisibility": self.visibility.clone()
+                "com.linkedin.ugc.MemberNetworkVisibility": self.configuration.visibility.clone()
             }
         });
 
@@ -54,7 +61,7 @@ impl Destination for LinkedIn {
             .post("https://api.linkedin.com/v2/ugcPosts")
             .header(
                 reqwest::header::AUTHORIZATION,
-                format!("Bearer {}", self.token.clone()),
+                format!("Bearer {}", self.configuration.token.clone()),
             )
             .header("X-Restli-Protocol-Version", "2.0.0")
             .json(&json)
