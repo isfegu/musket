@@ -1,9 +1,16 @@
 use super::{Destination, DestinationError};
 use bsky_sdk::{api::types::string::Datetime, api::xrpc, rich_text::RichText, BskyAgent};
+use serde::{Deserialize, Serialize};
 
-pub struct Bluesky {
+#[derive(Clone, Default, Serialize, Deserialize)]
+pub struct BlueskyConfiguration {
     pub identifier: String,
     pub password: String,
+    pub commentary: String,
+    pub enabled: bool,
+}
+pub struct Bluesky {
+    pub configuration: BlueskyConfiguration,
     pub url: String,
     pub tags: Vec<String>,
     pub commentary: String,
@@ -31,7 +38,10 @@ impl Destination for Bluesky {
     async fn fire(&self) -> Result<(), DestinationError> {
         let agent = BskyAgent::builder().build().await?;
         agent
-            .login(self.identifier.as_str(), self.password.as_str())
+            .login(
+                self.configuration.identifier.as_str(),
+                self.configuration.password.as_str(),
+            )
             .await?;
 
         let mut rich_text_content = format!("{} {}", self.commentary, self.url);

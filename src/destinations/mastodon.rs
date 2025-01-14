@@ -1,9 +1,16 @@
 use super::{Destination, DestinationError};
 use megalodon::{entities::StatusVisibility, generator, megalodon::PostStatusInputOptions};
+use serde::{Deserialize, Serialize};
 
-pub struct Mastodon {
+#[derive(Clone, Default, Serialize, Deserialize)]
+pub struct MastodonConfiguration {
     pub server: String,
     pub token: String,
+    pub commentary: String,
+    pub enabled: bool,
+}
+pub struct Mastodon {
+    pub configuration: MastodonConfiguration,
     pub url: String,
     pub tags: Vec<String>,
     pub commentary: String,
@@ -21,8 +28,8 @@ impl Destination for Mastodon {
     async fn fire(&self) -> Result<(), DestinationError> {
         match generator(
             megalodon::SNS::Mastodon,
-            self.server.clone(),
-            Some(self.token.clone()),
+            self.configuration.server.clone(),
+            Some(self.configuration.token.clone()),
             Some(String::from("Musket")),
         ) {
             Err(e) => {

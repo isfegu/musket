@@ -2,39 +2,12 @@ use confy::ConfyError;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
-#[derive(Default, Debug, Serialize, Deserialize)]
-pub struct BlueskyConfiguration {
-    pub identifier: String,
-    pub password: String,
-    pub commentary: String,
-    pub enabled: bool,
-}
+use crate::destinations::{
+    bluesky::BlueskyConfiguration, linkedin::LinkedinConfiguration,
+    mastodon::MastodonConfiguration, turso::TursoConfiguration,
+};
 
-#[derive(Default, Debug, Serialize, Deserialize)]
-pub struct LinkedinConfiguration {
-    pub token: String,
-    pub author: String,
-    pub commentary: String,
-    pub visibility: String,
-    pub enabled: bool,
-}
-
-#[derive(Default, Debug, Serialize, Deserialize)]
-pub struct MastodonConfiguration {
-    pub server: String,
-    pub token: String,
-    pub commentary: String,
-    pub enabled: bool,
-}
-
-#[derive(Default, Debug, Serialize, Deserialize)]
-pub struct TursoConfiguration {
-    pub database: String,
-    pub token: String,
-    pub enabled: bool,
-}
-
-#[derive(Default, Debug, Serialize, Deserialize)]
+#[derive(Default, Serialize, Deserialize)]
 pub struct Configuration {
     pub bluesky: BlueskyConfiguration,
     pub linkedin: LinkedinConfiguration,

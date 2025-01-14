@@ -1,5 +1,7 @@
 use clap::{Parser, Subcommand};
 
+use crate::destinations::Destinations;
+
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 pub struct Cli {
@@ -39,14 +41,4 @@ pub enum Command {
         #[arg(short, long)]
         commentary: Option<String>,
     },
-}
-
-/// Enum with all the enabled destinations
-#[derive(Debug, Clone, clap::ValueEnum)]
-pub enum Destinations {
-    All,
-    Bluesky,
-    LinkedIn,
-    Mastodon,
-    Turso,
 }
