@@ -25,7 +25,7 @@ pub async fn run() -> Result<Vec<String>, MusketError> {
 
             if config::configuration_exists()? && !overwrite {
                 return Err(MusketError::Cli {
-                    message: "The configuration file already exists. If you want to overwrite it, please run musket init command with the -f, --force option.".to_string(),
+                    message: "The configuration file already exists. If you want to overwrite it, please run the musket init command with the -f, --force option.".to_string(),
                 });
             }
 
@@ -45,6 +45,12 @@ pub async fn run() -> Result<Vec<String>, MusketError> {
             tags,
             commentary,
         } => {
+            if !config::configuration_exists()? {
+                return Err(MusketError::Cli {
+                    message: format!("The configuration file does not exist. If you want to send \"{url}\" to {} destination, please run first the musket init command and then fill the configuration file.", destination.unwrap_or_default().iter().map(std::string::ToString::to_string).collect::<Vec<String>>().join(", ")),
+                });
+            }
+
             if destination.is_none() {
                 return Err(MusketError::Cli {
                     message: format!("The url \"{url}\" cannot be sent to a non-existing destination. Set, at least, one valid destination."),
