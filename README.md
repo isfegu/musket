@@ -14,6 +14,19 @@ For a while, __Musket__ is provided as a cargo package, therefore you need _carg
 cargo install musket
 ```
 
+#### Dependencies
+
+Due to `cargo install` download, compile and build __Musket__ some dependencies must be installed in your machine.
+
+For an Ubuntu 24.04:
+```bash
+$ sudo apt install build-essential pkg-config libssl-dev
+```
+
+Other GNU/Linux distros have to change the package manager (like `dnf`, `pacman`, etc) and the package names.
+
+Necessary dependencies for other operating systems are pending investigation.
+
 ### 2.- Create the configuration file
 
 To create the configuration file, execute:

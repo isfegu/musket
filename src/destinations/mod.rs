@@ -15,6 +15,12 @@ pub enum Destinations {
     Turso,
 }
 
+impl std::fmt::Display for Destinations {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        std::fmt::Debug::fmt(self, f)
+    }
+}
+
 pub trait Destination {
     async fn fire(&self) -> Result<(), DestinationError>;
 }
