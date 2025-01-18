@@ -1,6 +1,7 @@
 use super::{Destination, DestinationError};
 use bsky_sdk::{api::types::string::Datetime, api::xrpc, rich_text::RichText, BskyAgent};
 use serde::{Deserialize, Serialize};
+use tracing::debug;
 
 #[derive(Clone, Default, Serialize, Deserialize)]
 pub struct BlueskyConfiguration {
@@ -36,6 +37,8 @@ impl From<xrpc::Error<bsky_sdk::api::com::atproto::server::create_session::Error
 
 impl Destination for Bluesky {
     async fn fire(&self) -> Result<(), DestinationError> {
+        debug!("Inside fire function. Bluesky destination");
+
         let agent = BskyAgent::builder().build().await?;
         agent
             .login(

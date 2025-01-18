@@ -1,6 +1,7 @@
 use super::{Destination, DestinationError};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
+use tracing::debug;
 
 #[derive(Clone, Default, Serialize, Deserialize)]
 pub struct LinkedinConfiguration {
@@ -27,6 +28,8 @@ impl From<reqwest::Error> for DestinationError {
 
 impl Destination for LinkedIn {
     async fn fire(&self) -> Result<(), DestinationError> {
+        debug!("Inside fire function. LinkedIn destination");
+
         let mut share_commentary = self.commentary.clone();
 
         if !self.tags.is_empty() {

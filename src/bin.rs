@@ -1,13 +1,15 @@
+use tracing::{error, info};
+
 #[tokio::main]
 async fn main() {
     match lib::run().await {
         Ok(messages) => {
             for message in &messages {
-                println!("{message}");
+                info!("{message}");
             }
         }
         Err(e) => {
-            eprintln!("Sorry, but the following error has occurred: \n\t{e}");
+            error!("{e}");
             std::process::exit(1);
         }
     }

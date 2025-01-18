@@ -2,6 +2,7 @@ use super::{Destination, DestinationError};
 use chrono::prelude::*;
 use libsql::Builder;
 use serde::{Deserialize, Serialize};
+use tracing::debug;
 
 #[derive(Clone, Default, Serialize, Deserialize)]
 pub struct TursoConfiguration {
@@ -25,6 +26,8 @@ impl From<libsql::Error> for DestinationError {
 
 impl Destination for Turso {
     async fn fire(&self) -> Result<(), DestinationError> {
+        debug!("Inside fire function. Bluesky destination");
+
         let local: DateTime<Local> = Local::now();
         let created = format!("{}", local.format("%Y-%m-%d %H:%M:%S"));
 
