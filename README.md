@@ -153,6 +153,14 @@ or
 $ musket fire --url wikipedia.org -d bluesky -d mastodon -d linked-in -d turso -t one -t two -t three -c "I've just discover this amazing website!"
 ```
 
+#### Logging
+
+By default, _errors_ and _information_ messages will be displayed on the terminal to be notified about the result of the __Musket__ execution. If you want to see the _debug_ messages you must set the `RUST_LOG` environment variable with the value `debug`. For example adding it before a __Musket__ execution command:
+
+```bash
+$ RUST_LOG="debug" musket fire --url wikipedia.org -d bluesky -d mastodon -d linked-in -d turso -t one -t two -t three -c "I've just discover this amazing website!"
+```
+
 ## Contributing
 
 If you want to contribute to __Musket__, please read the [CONTRIBUTING.md](./CONTRIBUTING.md) document.

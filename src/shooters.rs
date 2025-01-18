@@ -1,3 +1,5 @@
+use tracing::debug;
+
 use crate::{
     config,
     destinations::{
@@ -12,10 +14,14 @@ pub async fn bluesky_shooter(
     tags: Vec<String>,
     commentary: Option<&String>,
 ) -> Result<String, MusketError> {
+    debug!("Inside bluesky_shooter function");
+
     if !cfg.bluesky.enabled {
-        return Ok(format!(
-            "The url \"{url}\" cannot be sent to Bluesky because this destination is disabled."
-        ));
+        return Err(MusketError::Destination {
+            message: format!(
+                "The url \"{url}\" cannot be sent to Bluesky because this destination is disabled."
+            ),
+        });
     }
 
     let bluesky = Bluesky {
@@ -36,10 +42,14 @@ pub async fn linkedin_shooter(
     tags: Vec<String>,
     commentary: Option<&String>,
 ) -> Result<String, MusketError> {
+    debug!("Inside linkedin_shooter function");
+
     if !cfg.linkedin.enabled {
-        return Ok(format!(
-            "The url \"{url}\" cannot be sent to LinkedIn because this destination is disabled."
-        ));
+        return Err(MusketError::Destination {
+            message: format!(
+                "The url \"{url}\" cannot be sent to LinkedIn because this destination is disabled."
+            ),
+        });
     }
 
     let linkedin = LinkedIn {
@@ -60,10 +70,14 @@ pub async fn mastodon_shooter(
     tags: Vec<String>,
     commentary: Option<&String>,
 ) -> Result<String, MusketError> {
+    debug!("Inside mastodon_shooter function");
+
     if !cfg.mastodon.enabled {
-        return Ok(format!(
-            "The url \"{url}\" cannot be sent to Mastodon because this destination is disabled."
-        ));
+        return Err(MusketError::Destination {
+            message: format!(
+                "The url \"{url}\" cannot be sent to Mastodon because this destination is disabled."
+            ),
+        });
     }
 
     let mastodon = Mastodon {
@@ -84,10 +98,14 @@ pub async fn turso_shooter(
     tags: Vec<String>,
     _commentary: Option<&String>,
 ) -> Result<String, MusketError> {
+    debug!("Inside turso_shooter function");
+
     if !cfg.turso.enabled {
-        return Ok(format!(
-            "The url \"{url}\" cannot be sent to Turso because this destination is disabled."
-        ));
+        return Err(MusketError::Destination {
+            message: format!(
+                "The url \"{url}\" cannot be sent to Turso because this destination is disabled."
+            ),
+        });
     }
 
     let turso = Turso {

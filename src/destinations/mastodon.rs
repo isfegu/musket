@@ -1,6 +1,7 @@
 use super::{Destination, DestinationError};
 use megalodon::{entities::StatusVisibility, generator, megalodon::PostStatusInputOptions};
 use serde::{Deserialize, Serialize};
+use tracing::debug;
 
 #[derive(Clone, Default, Serialize, Deserialize)]
 pub struct MastodonConfiguration {
@@ -26,6 +27,8 @@ impl From<megalodon::error::Error> for DestinationError {
 
 impl Destination for Mastodon {
     async fn fire(&self) -> Result<(), DestinationError> {
+        debug!("Inside fire function. Mastodon destination");
+
         match generator(
             megalodon::SNS::Mastodon,
             self.configuration.server.clone(),

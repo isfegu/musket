@@ -1,6 +1,6 @@
 [package]
 name = "musket"
-version = "0.20.4"
+version = "0.21.0"
 edition = "2021"
 repository = "https://github.com/isfegu/musket"
 description = "Musket is a command line interface to send a URL to several destinations."
@@ -30,6 +30,8 @@ reqwest = { version = "0.12.12", features = ["json"] }
 serde = "1.0.217"
 serde_json = "1.0.135"
 tokio = "1.43.0"
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
 
 [lints.clippy]
 pedantic = "warn" 
