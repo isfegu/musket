@@ -26,6 +26,11 @@ impl From<reqwest::Error> for DestinationError {
     }
 }
 
+#[derive(Deserialize)]
+struct LinkedInResponse {
+    message: String,
+}
+
 impl Destination for LinkedIn {
     async fn fire(&self) -> Result<(), DestinationError> {
         debug!("Inside fire function. LinkedIn destination");
@@ -60,7 +65,7 @@ impl Destination for LinkedIn {
         });
 
         let client = reqwest::Client::new();
-        let _response: reqwest::Response = client
+        let response: reqwest::Response = client
             .post("https://api.linkedin.com/v2/ugcPosts")
             .header(
                 reqwest::header::AUTHORIZATION,
@@ -70,6 +75,16 @@ impl Destination for LinkedIn {
             .json(&json)
             .send()
             .await?;
+
+        if response.status().is_server_error() || response.status().is_client_error() {
+            let response_content = response.json::<LinkedInResponse>().await?;
+            return Err(DestinationError::LinkedIn {
+                message: format!(
+                    "The url cannot be sent to LinkedIn due to {}.",
+                    response_content.message
+                ),
+            });
+        }
 
         Ok(())
     }

@@ -1,6 +1,6 @@
 [package]
 name = "musket"
-version = "0.21.0"
+version = "0.21.2"
 edition = "2021"
 repository = "https://github.com/isfegu/musket"
 description = "Musket is a command line interface to send a URL to several destinations."

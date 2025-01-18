@@ -9,7 +9,7 @@ use cli::{Cli, Command};
 use destinations::Destinations;
 use errors::MusketError;
 use shooters::{bluesky_shooter, linkedin_shooter, mastodon_shooter, turso_shooter};
-use tracing::debug;
+use tracing::{debug, level_filters::LevelFilter};
 use tracing_subscriber::EnvFilter;
 
 /// Runs the main logic of the application.
@@ -22,7 +22,11 @@ pub async fn run() -> Result<Vec<String>, MusketError> {
     let cli = Cli::parse();
 
     tracing_subscriber::fmt()
-        .with_env_filter(EnvFilter::from_default_env())
+        .with_env_filter(
+            EnvFilter::builder()
+                .with_default_directive(LevelFilter::INFO.into())
+                .from_env_lossy(),
+        )
         .without_time()
         .init();
 
