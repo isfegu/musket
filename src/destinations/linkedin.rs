@@ -8,6 +8,7 @@ pub struct LinkedinConfiguration {
     pub token: String,
     pub author: String,
     pub commentary: String,
+    pub language: String,
     pub visibility: String,
     pub enabled: bool,
 }
@@ -16,6 +17,7 @@ pub struct LinkedIn {
     pub url: String,
     pub tags: Vec<String>,
     pub commentary: String,
+    pub language: String,
 }
 
 impl From<reqwest::Error> for DestinationError {
@@ -48,6 +50,7 @@ impl Destination for LinkedIn {
             "specificContent": {
                 "com.linkedin.ugc.ShareContent": {
                     "shareCommentary": {
+                        "inferredLocale": self.language,
                         "text": share_commentary
                     },
                     "shareMediaCategory": "ARTICLE",

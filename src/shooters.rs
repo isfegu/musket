@@ -13,6 +13,7 @@ pub async fn bluesky_shooter(
     url: &str,
     tags: Vec<String>,
     commentary: Option<&String>,
+    language: Option<&String>,
 ) -> Result<String, MusketError> {
     debug!("Inside bluesky_shooter function");
 
@@ -29,6 +30,7 @@ pub async fn bluesky_shooter(
         url: url.to_string(),
         tags,
         commentary: commentary.unwrap_or(&cfg.bluesky.commentary).to_string(),
+        language: language.unwrap_or(&cfg.bluesky.language).to_string(),
     };
 
     bluesky.fire().await?;
@@ -41,6 +43,7 @@ pub async fn linkedin_shooter(
     url: &str,
     tags: Vec<String>,
     commentary: Option<&String>,
+    language: Option<&String>,
 ) -> Result<String, MusketError> {
     debug!("Inside linkedin_shooter function");
 
@@ -57,6 +60,7 @@ pub async fn linkedin_shooter(
         url: url.to_string(),
         tags,
         commentary: commentary.unwrap_or(&cfg.linkedin.commentary).to_string(),
+        language: language.unwrap_or(&cfg.linkedin.language).to_string(),
     };
 
     linkedin.fire().await?;
@@ -69,6 +73,7 @@ pub async fn mastodon_shooter(
     url: &str,
     tags: Vec<String>,
     commentary: Option<&String>,
+    language: Option<&String>,
 ) -> Result<String, MusketError> {
     debug!("Inside mastodon_shooter function");
 
@@ -85,6 +90,7 @@ pub async fn mastodon_shooter(
         url: url.to_string(),
         tags,
         commentary: commentary.unwrap_or(&cfg.mastodon.commentary).to_string(),
+        language: language.unwrap_or(&cfg.mastodon.language).to_string(),
     };
 
     mastodon.fire().await?;

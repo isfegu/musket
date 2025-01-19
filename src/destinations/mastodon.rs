@@ -8,6 +8,7 @@ pub struct MastodonConfiguration {
     pub server: String,
     pub token: String,
     pub commentary: String,
+    pub language: String,
     pub enabled: bool,
 }
 pub struct Mastodon {
@@ -15,6 +16,7 @@ pub struct Mastodon {
     pub url: String,
     pub tags: Vec<String>,
     pub commentary: String,
+    pub language: String,
 }
 
 impl From<megalodon::error::Error> for DestinationError {
@@ -53,7 +55,7 @@ impl Destination for Mastodon {
                         status_content,
                         Some(&PostStatusInputOptions {
                             visibility: Some(StatusVisibility::Public),
-                            language: Some("es".to_string()),
+                            language: Some(self.language.clone()),
                             ..Default::default()
                         }),
                     )
