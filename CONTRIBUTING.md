@@ -34,6 +34,7 @@ pub struct BlueskyConfiguration {
     pub identifier: String,
     pub password: String,
     pub commentary: String,
+    pub language: String,
     pub enabled: bool,
 }
 ```
@@ -48,6 +49,7 @@ pub struct Bluesky {
     pub url: String,
     pub tags: Vec<String>,
     pub commentary: String,
+    pub language: String,
 }
 ```
 

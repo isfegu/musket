@@ -1,5 +1,12 @@
 use super::{Destination, DestinationError};
-use bsky_sdk::{api::types::string::Datetime, api::xrpc, rich_text::RichText, BskyAgent};
+use bsky_sdk::{
+    api::{
+        types::string::{Datetime, Language},
+        xrpc,
+    },
+    rich_text::RichText,
+    BskyAgent,
+};
 use serde::{Deserialize, Serialize};
 use tracing::debug;
 
@@ -8,6 +15,7 @@ pub struct BlueskyConfiguration {
     pub identifier: String,
     pub password: String,
     pub commentary: String,
+    pub language: String,
     pub enabled: bool,
 }
 pub struct Bluesky {
@@ -15,6 +23,7 @@ pub struct Bluesky {
     pub url: String,
     pub tags: Vec<String>,
     pub commentary: String,
+    pub language: String,
 }
 
 impl From<bsky_sdk::Error> for DestinationError {
@@ -56,6 +65,7 @@ impl Destination for Bluesky {
 
         let rt = RichText::new_with_detect_facets(rich_text_content).await?;
 
+        // @todo: Use an From implementation instead map_err to handle language conversion error
         agent
             .create_record(bsky_sdk::api::app::bsky::feed::post::RecordData {
                 created_at: Datetime::now(),
@@ -63,7 +73,11 @@ impl Destination for Bluesky {
                 entities: None,
                 facets: rt.facets,
                 labels: None,
-                langs: None,
+                langs: Some(vec![Language::new(self.language.clone()).map_err(|e| {
+                    DestinationError::Bluesky {
+                        message: format!("The url cannot be sent to Bluesky due to {e}"),
+                    }
+                })?]),
                 reply: None,
                 tags: None,
                 text: rt.text,

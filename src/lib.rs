@@ -17,6 +17,7 @@ use tracing_subscriber::EnvFilter;
 /// # Errors
 ///
 /// This function will return an error if any of the commands fail.
+#[allow(clippy::too_many_lines)]
 pub async fn run() -> Result<Vec<String>, MusketError> {
     let mut success_messages: Vec<String> = vec![];
     let cli = Cli::parse();
@@ -57,6 +58,7 @@ pub async fn run() -> Result<Vec<String>, MusketError> {
             destination,
             tags,
             commentary,
+            language,
         } => {
             debug!("Inside run function. Command::Fire");
 
@@ -80,29 +82,71 @@ pub async fn run() -> Result<Vec<String>, MusketError> {
                 match target {
                     Destinations::All => {
                         success_messages.push(
-                            bluesky_shooter(&cfg, &url, tags.clone(), commentary.as_ref()).await?,
+                            bluesky_shooter(
+                                &cfg,
+                                &url,
+                                tags.clone(),
+                                commentary.as_ref(),
+                                language.as_ref(),
+                            )
+                            .await?,
                         );
                         success_messages.push(
-                            linkedin_shooter(&cfg, &url, tags.clone(), commentary.as_ref()).await?,
+                            linkedin_shooter(
+                                &cfg,
+                                &url,
+                                tags.clone(),
+                                commentary.as_ref(),
+                                language.as_ref(),
+                            )
+                            .await?,
                         );
                         success_messages.push(
-                            mastodon_shooter(&cfg, &url, tags.clone(), commentary.as_ref()).await?,
+                            mastodon_shooter(
+                                &cfg,
+                                &url,
+                                tags.clone(),
+                                commentary.as_ref(),
+                                language.as_ref(),
+                            )
+                            .await?,
                         );
                         success_messages.push(turso_shooter(&cfg, &url, tags.clone(), None).await?);
                     }
                     Destinations::Bluesky => {
                         success_messages.push(
-                            bluesky_shooter(&cfg, &url, tags.clone(), commentary.as_ref()).await?,
+                            bluesky_shooter(
+                                &cfg,
+                                &url,
+                                tags.clone(),
+                                commentary.as_ref(),
+                                language.as_ref(),
+                            )
+                            .await?,
                         );
                     }
                     Destinations::LinkedIn => {
                         success_messages.push(
-                            linkedin_shooter(&cfg, &url, tags.clone(), commentary.as_ref()).await?,
+                            linkedin_shooter(
+                                &cfg,
+                                &url,
+                                tags.clone(),
+                                commentary.as_ref(),
+                                language.as_ref(),
+                            )
+                            .await?,
                         );
                     }
                     Destinations::Mastodon => {
                         success_messages.push(
-                            mastodon_shooter(&cfg, &url, tags.clone(), commentary.as_ref()).await?,
+                            mastodon_shooter(
+                                &cfg,
+                                &url,
+                                tags.clone(),
+                                commentary.as_ref(),
+                                language.as_ref(),
+                            )
+                            .await?,
                         );
                     }
                     Destinations::Turso => {

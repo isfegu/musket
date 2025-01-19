@@ -40,5 +40,9 @@ pub enum Command {
         /// The comment to publish along with the URL (if destination allows it). The comment is optional.
         #[arg(short, long)]
         commentary: Option<String>,
+
+        /// The language to use in the destination. The language is optional.
+        #[arg(short, long)]
+        language: Option<String>,
     },
 }

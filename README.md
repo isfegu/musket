@@ -56,6 +56,7 @@ Before sending a URL to Bluesky destination you must:
    - the `identifier` is the account's username or email.
    - the `password` of the account.
    - `commentary` is the default text that will be shown in the post along the link.
+   - `language` is the language of the commentary.
    - `enabled` to set whether the destination can be selected.
 
 #### Mastodon
@@ -68,6 +69,7 @@ Before sending a URL to Mastodon destination you must:
    - the `server` is the URL of your Mastodon account provider, for example: https://mastodon.online.
    - the `token` used as a authentication.
    - `commentary` is the default text that will be shown in the post along the link.
+   - `language` is the language of the commentary.
    - `enabled` to set whether the destination can be selected.
 
 #### LinkedIn
@@ -81,6 +83,7 @@ Before sending a URL to LinkedIn destination you must:
    - the `token` used as a bearer authentication.
    - the `author` identifier.
    - `commentary` is the default text that will be shown in the post along the link.
+   - `language` is the language of the commentary.
    - `visibility`, can be "PUBLIC" or "CONNECTIONS".
    - `enabled` to set whether the destination can be selected.
 
@@ -136,21 +139,22 @@ The _fire_ command have several options:
 - __-d, --destination__: Use this option to set where the URL will be send. At least, one destination must be specified.
 - __-t, --tags__: Use this option to set the tags to be used in the destinations. Tags are optional.
 - __-c, --commentary__: Use this option to set the text that will be published along with the URL. Commentary is optional. If no text is specified, then the text set in the [configuration file](#2--create-the-configuration-file) will be used. _Turso_ destination not uses commentaries.
+- __-l, --language__: Use this option to set the language of the commentary. Language is optional. If no language is specified, then the language set in the [configuration file](#2--create-the-configuration-file) will be used. _Turso_ destination not uses language. The language __must__ be use [ISO 639-1 language tag](https://en.wikipedia.org/wiki/ISO_639-1). That means, use two letters, like `en` for English, `es` for Spanish, etc.
 
 ```bash
-$ musket fire --url <URL> --destination <DESTINATION> --tags <tags> --commentary <text>
+$ musket fire --url <URL> --destination <DESTINATION> --tags <tags> --commentary <text> --language <text>
 ```
 
 For example:
 
 ```bash
-$ musket fire --url wikipedia.org --destination bluesky,mastodon,linked-in,turso --tags one,two,three --commentary "I've just discover this amazing website!"
+$ musket fire --url wikipedia.org --destination bluesky,mastodon,linked-in,turso --tags one,two,three --commentary "I've just discover this amazing website!" --language en
 ```
 
 or
 
 ```bash
-$ musket fire --url wikipedia.org -d bluesky -d mastodon -d linked-in -d turso -t one -t two -t three -c "I've just discover this amazing website!"
+$ musket fire --url wikipedia.org -d bluesky -d mastodon -d linked-in -d turso -t one -t two -t three -c "I've just discover this amazing website!" -l en
 ```
 
 #### Logging
