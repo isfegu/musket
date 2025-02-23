@@ -2,7 +2,7 @@ use tracing::{error, info};
 
 #[tokio::main]
 async fn main() {
-    match lib::run().await {
+    match lib::entrypoint::run().await {
         Ok(messages) => {
             for message in &messages {
                 info!("{message}");
