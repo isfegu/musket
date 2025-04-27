@@ -20,17 +20,17 @@ pub struct LinkedIn {
     pub language: String,
 }
 
+#[derive(Deserialize)]
+struct LinkedInResponse {
+    message: String,
+}
+
 impl From<reqwest::Error> for DestinationError {
     fn from(e: reqwest::Error) -> Self {
         DestinationError::LinkedIn {
             message: format!("The url cannot be sent to LinkedIn due to {e}."),
         }
     }
-}
-
-#[derive(Deserialize)]
-struct LinkedInResponse {
-    message: String,
 }
 
 impl Destination for LinkedIn {
@@ -40,7 +40,7 @@ impl Destination for LinkedIn {
         let mut share_commentary = self.commentary.clone();
 
         if !self.tags.is_empty() {
-            let tags_joined = self.tags.join(", #");
+            let tags_joined = self.tags.join(" #");
             share_commentary = format!("{}\n\n#{}", self.commentary.clone(), tags_joined);
         }
 

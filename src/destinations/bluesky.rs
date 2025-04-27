@@ -59,7 +59,7 @@ impl Destination for Bluesky {
         let mut rich_text_content = format!("{} {}", self.commentary, self.url);
 
         if !self.tags.is_empty() {
-            let tags_joined = self.tags.join(", #");
+            let tags_joined = self.tags.join(" #");
             rich_text_content = format!("{}\n#{}", rich_text_content, &tags_joined);
         }
 

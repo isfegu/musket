@@ -3,6 +3,7 @@ use crate::config;
 use crate::destinations::Destinations;
 use crate::errors::MusketError;
 use crate::shooters::{bluesky_shooter, linkedin_shooter, mastodon_shooter, turso_shooter};
+use crate::sources::{instapaper, Bookmark};
 use clap::Parser;
 use tracing::{debug, level_filters::LevelFilter};
 use tracing_subscriber::EnvFilter;
@@ -50,6 +51,7 @@ pub async fn run() -> Result<Vec<String>, MusketError> {
         }
         Command::Fire {
             url,
+            from,
             destination,
             tags,
             commentary,
@@ -59,19 +61,47 @@ pub async fn run() -> Result<Vec<String>, MusketError> {
 
             if !config::configuration_exists()? {
                 return Err(MusketError::Cli {
-                    message: format!("The configuration file does not exist. If you want to send \"{url}\" to {} destination, please first run the musket init command and next fill the configuration file.", destination.unwrap_or_default().iter().map(std::string::ToString::to_string).collect::<Vec<String>>().join(", ")),
+                    message: "The configuration file does not exist. To send any URL to any destination, please first run the musket init command and next fill the configuration file.".to_string(),
+                });
+            }
+
+            if url.is_none() && from.is_none() {
+                return Err(MusketError::Cli {
+                    message: "Neither the url nor the from flags are present. Set, at least, one of them.".to_string(),
                 });
             }
 
             if destination.is_none() {
                 return Err(MusketError::Cli {
-                    message: format!("The url \"{url}\" cannot be sent to a non-existing destination. Set, at least, one valid destination."),
+                    message: "The url cannot be sent to a non-existing destination. Set, at least, one valid destination.".to_string(),
                 });
             }
 
             let cfg = config::configure()?;
-            let tags = tags.unwrap_or_default();
+            let mut tags = tags.unwrap_or_default();
             let destinations = destination.unwrap_or_default();
+            let mut url = url.unwrap_or_default();
+            let mut bookmark: Bookmark = Bookmark {
+                id: 0,
+                url: String::new(),
+                tags: vec![],
+            };
+
+            if from.is_some() {
+                let instapaper = instapaper::Instapaper::new(
+                    &cfg.instapaper.username,
+                    &cfg.instapaper.password,
+                    &cfg.instapaper.consumer_key,
+                    &cfg.instapaper.consumer_secret,
+                );
+                bookmark = instapaper.get_bookmark().await?;
+                url = bookmark.url;
+                tags = bookmark.tags;
+                success_messages.push(format!(
+                    "The bookmark \"{0}\" with this url \"{1}\" has been obtained from Instapaper.",
+                    bookmark.id, url
+                ));
+            }
 
             for target in destinations {
                 match target {
@@ -148,6 +178,20 @@ pub async fn run() -> Result<Vec<String>, MusketError> {
                         success_messages.push(turso_shooter(&cfg, &url, tags.clone(), None).await?);
                     }
                 }
+            }
+
+            if from.is_some() {
+                let instapaper = instapaper::Instapaper::new(
+                    &cfg.instapaper.username,
+                    &cfg.instapaper.password,
+                    &cfg.instapaper.consumer_key,
+                    &cfg.instapaper.consumer_secret,
+                );
+                instapaper.delete_bookmark(bookmark.id).await?;
+                success_messages.push(format!(
+                    "The bookmark \"{0}\" with this url \"{1}\" has been deleted of Instapaper.",
+                    bookmark.id, url
+                ));
             }
         }
     }
