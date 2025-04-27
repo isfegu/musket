@@ -1,6 +1,7 @@
 use clap::{Parser, Subcommand};
 
 use crate::destinations::Destinations;
+use crate::sources::Sources;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -23,11 +24,15 @@ pub enum Command {
         )]
         force: Option<bool>,
     },
-    /// Use the Fire command to send a URL to one or more destinations. A list of tags can be specified.
+    /// Use the Fire command to send a URL to one or more destinations.
     Fire {
-        /// The URL to send to the destinations. The URL is mandatory.
+        /// The URL to send to the destinations. The url flag is mandatory if the source flag is not present.
         #[arg(short, long)]
-        url: String,
+        url: Option<String>,
+
+        /// The source from which to obtain the links that will be sent to the destinations. The source flag is mandatory if the url flag is not present.
+        #[arg(short, long)]
+        from: Option<Sources>,
 
         /// The place to send (publish, save, etc.) the URL. At least, one destination must be choosed.
         #[arg(short, long, value_delimiter = ',')]

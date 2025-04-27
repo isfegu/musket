@@ -108,8 +108,29 @@ CREATE TABLE links (
    - the `token` used as a authentication.
    - `enabled` to set whether the destination can be selected.
 
+### 4.- Configure the sources
 
-### 4.- Using de CLI
+One way to specify a URL is to get it from the sources instead of setting it directly. Currently, __Musket__ only supports [Instapaper](https://www.instapaper.com/) as a valid source.
+
+#### Instapaper
+
+Before getting a URL from Instapaper you must:
+
+1. Create a [Instapaper](https://www.instapaper.com/) account.
+2. Request a [New OAuth Application](https://www.instapaper.com/main/request_oauth_consumer_token).
+3. Fill the `instapaper` section in the __Musket__ [configuration file](#2--create-the-configuration-file). You must provide:
+   - the `username` used as a part of the credentials of your account.
+   - the `password` used as a part of the credentials of your account.
+   - the `consumer_key` provided by Instapaper after the New OAuth Application request.
+   - `consumer_secret` provided by Instapaper after the New OAuth Application request.
+
+Here's how __Musket__ works with Instapaper:
+
+- __Musket__ only sends to the destinations one Instapaper bookmark at a time.
+- __Musket__ only sends to the destinations Instapaper bookmarks with the tag `musket`.
+- Once the bookmark is sent to the destinations, __Musket__ deletes it from Instapaper.
+
+### 5.- Using the CLI
 
 Run `musket -h` to get the details of each command and option.
 
@@ -135,14 +156,15 @@ $ musket fire
 
 The _fire_ command have several options:
 
-- __-u, --url__: Use this option to set the URL to send to the destinations. Url is mandatory.
+- __-u, --url__: Use this option to set the URL to send to the destinations. Url is mandatory if `-f, --from` is not present.
+- __-f, --from__: Use this option to set from where the URL to send to the destinations should be obtained. From is mandatory if `-u, --url` is not present.
 - __-d, --destination__: Use this option to set where the URL will be send. At least, one destination must be specified.
-- __-t, --tags__: Use this option to set the tags to be used in the destinations. Tags are optional.
+- __-t, --tags__: Use this option to set the tags to be used in the destinations. Tags are optional. If `-f, --from` is present, the tags used will be the tags set in the source.
 - __-c, --commentary__: Use this option to set the text that will be published along with the URL. Commentary is optional. If no text is specified, then the text set in the [configuration file](#2--create-the-configuration-file) will be used. _Turso_ destination not uses commentaries.
 - __-l, --language__: Use this option to set the language of the commentary. Language is optional. If no language is specified, then the language set in the [configuration file](#2--create-the-configuration-file) will be used. _Turso_ destination not uses language. The language __must__ be use [ISO 639-1 language tag](https://en.wikipedia.org/wiki/ISO_639-1). That means, use two letters, like `en` for English, `es` for Spanish, etc.
 
 ```bash
-$ musket fire --url <URL> --destination <DESTINATION> --tags <tags> --commentary <text> --language <text>
+$ musket fire --url <URL> --from <SOURCE> --destination <DESTINATION> --tags <tags> --commentary <text> --language <text>
 ```
 
 For example:
@@ -155,6 +177,12 @@ or
 
 ```bash
 $ musket fire --url wikipedia.org -d bluesky -d mastodon -d linked-in -d turso -t one -t two -t three -c "I've just discover this amazing website!" -l en
+```
+
+or
+
+```bash
+$ musket fire --source instapaper --destination all --commentary "I've just discover this amazing website!" --language en
 ```
 
 #### Logging

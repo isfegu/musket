@@ -46,7 +46,7 @@ impl Destination for Mastodon {
                 let mut status_content = format!("{}\n{}", self.commentary, self.url);
 
                 if !self.tags.is_empty() {
-                    let tags_joined = self.tags.join(", #");
+                    let tags_joined = self.tags.join(" #");
                     status_content = format!("{}\n#{}", status_content, &tags_joined);
                 }
 

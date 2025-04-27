@@ -2,9 +2,12 @@ use confy::ConfyError;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
-use crate::destinations::{
-    bluesky::BlueskyConfiguration, linkedin::LinkedinConfiguration,
-    mastodon::MastodonConfiguration, turso::TursoConfiguration,
+use crate::{
+    destinations::{
+        bluesky::BlueskyConfiguration, linkedin::LinkedinConfiguration,
+        mastodon::MastodonConfiguration, turso::TursoConfiguration,
+    },
+    sources::instapaper::InstapaperConfiguration,
 };
 
 #[derive(Default, Serialize, Deserialize)]
@@ -13,6 +16,7 @@ pub struct Configuration {
     pub linkedin: LinkedinConfiguration,
     pub mastodon: MastodonConfiguration,
     pub turso: TursoConfiguration,
+    pub instapaper: InstapaperConfiguration,
 }
 
 pub fn configuration_exists() -> Result<bool, ConfigurationError> {
