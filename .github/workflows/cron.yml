@@ -1,25 +1,25 @@
-name: Execute Musket as cron job
-on:
-  schedule:
-    - cron: '0 12 * * *'
-env:
-  CARGO_TERM_COLOR: always
-jobs:
-  musket:
-    name: Run Musket
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create Musket configuration
-        run: |
-          mkdir -p $HOME/.config/musket
-          echo $MUSKET_CONFIGURATION >> $HOME/.config/musket/config.toml
-        env:
-          MUSKET_CONFIGURATION: ${{ secrets.MUSKET_CONFIGURATION }}
-      - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
-      - name: Install Musket from crates.io
-        uses: baptiste0928/cargo-install@v3
-        with:
-          crate: musket
-      - name: Run Musket
-        run: musket fire --from instapaper --destination all
+# name: Execute Musket as cron job
+# on:
+#   schedule:
+#     - cron: '0 12 * * *'
+# env:
+#   CARGO_TERM_COLOR: always
+# jobs:
+#   musket:
+#     name: Execute Musket
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Create Musket configuration
+#         run: |
+#           mkdir -p $HOME/.config/musket
+#           echo $MUSKET_CONFIGURATION >> $HOME/.config/musket/config.toml
+#         env:
+#           MUSKET_CONFIGURATION: ${{ secrets.MUSKET_CONFIGURATION }}
+#       - name: Set up Rust
+#         uses: dtolnay/rust-toolchain@stable
+#       - name: Install Musket from crates.io
+#         uses: baptiste0928/cargo-install@v3
+#         with:
+#           crate: musket
+#       - name: Run Musket using Instapaper as source
+#         run: musket fire --from instapaper --destination all
