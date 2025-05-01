@@ -17,21 +17,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.tag }}
       - name: Create Musket configuration
         run: |
           mkdir -p $HOME/.config/musket
+          ls -la
           gpg --quiet --batch --yes --decrypt --passphrase="$GPG_PASSPHRASE" \
-          --output $HOME/.config/config.toml config.toml.gpg
-          echo $HOME/.config/musket/config.toml
+          --output $HOME/.config/musket/config.toml config.toml.gpg
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      # - name: Set up Rust
-      #   uses: dtolnay/rust-toolchain@stable
-      # - name: Install Musket from crates.io
-      #   uses: baptiste0928/cargo-install@v3
-      #   with:
-      #     crate: musket
-      # - name: Run Musket using Instapaper as source
-      #   run: musket fire --from instapaper --destination all
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install Musket from crates.io
+        uses: baptiste0928/cargo-install@v3
+        with:
+          crate: musket
+      - name: Run Musket using Instapaper as source
+        run: musket fire --from instapaper --destination all
