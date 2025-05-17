@@ -1,14 +1,7 @@
 name: Execute Musket as cron job
-# on:
-#   schedule:
-#     - cron: '0 12 * * *'
 on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: "The tag to publish"
-        required: true
-        type: string
+  schedule:
+    - cron: "0 12 * * *"
 env:
   CARGO_TERM_COLOR: always
 jobs:
