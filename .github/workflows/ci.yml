@@ -1,48 +1,45 @@
 name: Automatically run CI
-
-on: 
+on:
   pull_request:
     branches:
       - main
-
 env:
   CARGO_TERM_COLOR: always
-
 jobs:
   check:
     name: Check if the code is correct
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: dtolnay/rust-toolchain@stable
-    - run: cargo check --locked
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo check --locked
 
   fmt:
     name: Check if the code is formatted correctly
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: dtolnay/rust-toolchain@stable
-    - run: cargo fmt --check
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo fmt --check
 
   clippy:
     name: Check if the code is clippy
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: dtolnay/rust-toolchain@stable
-    - run: cargo clippy --no-deps -- -W clippy::pedantic
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo clippy --no-deps -- -W clippy::pedantic
 
   build:
-      name: Check if the build is successful
-      strategy:
-        matrix:
-          os:
-            - ubuntu-latest
-            - macos-latest
-            - windows-latest
-      runs-on: ${{ matrix.os }}
-      steps:
-        - uses: actions/checkout@v4
-        - uses: dtolnay/rust-toolchain@stable
-        - run: cargo build --all --locked --verbose
+    name: Check if the build is successful
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo build --all --locked --verbose
